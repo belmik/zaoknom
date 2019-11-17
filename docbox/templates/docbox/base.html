@@ -44,7 +44,7 @@
                     <ul class="nav flex-column fixed-bottom" style="width:250px;">
                         <li class="nav-item container">
                             <div class="row mb-3">
-                                <a class="nav-link py-0" href="{% url "logout" %}">
+                                <a class="nav-link py-0" href="{% url "docbox:logout" %}">
                                     Выйти
                                 </a>
                             </div>
@@ -58,7 +58,7 @@
                         </li>
                         <li class="nav-item container">
                             <div class="row mb-3">
-                                <a class="nav-link py-0" href="{% url 'export-csv' %}">
+                                <a class="nav-link py-0" href="{% url 'docbox:export-csv' %}">
                                     <span class="mr-2 fas fa-fw fa-file-export"></span>Скачать все заказы
                                 </a>
                             </div>

@@ -37,10 +37,10 @@
             <td class="text-right">{{ order.price.total|price }}</td>
             <td class="text-right">{{ order.remaining|price }}</td>
             <td>
-            <a class="text-reset" href="{% url 'order-detail' order.pk %}">
+            <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
                 <span class="fas fa-eye fa-fw"></span>
             </a>
-            <a class="text-reset" href="{% url 'order-edit' order.pk %}">
+            <a class="text-reset" href="{% url 'docbox:order-edit' order.pk %}">
                 <span class="fas fa-pen fa-fw"></span>
             </a>
             </td>

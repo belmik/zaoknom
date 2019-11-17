@@ -9,17 +9,16 @@ register = template.Library()
 
 @register.inclusion_tag("docbox/main-menu.html", takes_context=True)
 def main_menu(context):
-    MenuItem = namedtuple(
-        "MenuItem",
-        "name, url, fa_icon_name, add_url, active_link_cls"
-        )
+    MenuItem = namedtuple("MenuItem", "name, url, fa_icon_name, add_url, active_link_cls")
     menu = [
-        ("Заказы", "orders-list", "fa-copy", "new-order"),
-        ("Клиенты", "clients-list", "fa-users", ""),
+        ("Заказы", "docbox:orders-list", "fa-copy", "docbox:new-order"),
+        ("Клиенты", "docbox:clients-list", "fa-users", ""),
     ]
 
     active_class_name = " active"
-    current_url_name = context.request.resolver_match.url_name
+
+    match = context.request.resolver_match
+    current_url_name = f"{match.namespace}:{match.url_name}"
 
     menu_list = []
 

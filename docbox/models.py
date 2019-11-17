@@ -50,10 +50,10 @@ class Client(models.Model):
         return self.orders_sum - self.transactions_sum
 
     def get_absolute_url(self):
-        return reverse("client-detail", kwargs={"pk": self.pk})
+        return reverse("docbox:client-detail", kwargs={"pk": self.pk})
 
     def get_absolute_edit_url(self):
-        return reverse("client-edit", kwargs={"pk": self.pk})
+        return reverse("docbox:client-edit", kwargs={"pk": self.pk})
 
     def natural_key(self):
         return (self.name, self.phone)
@@ -296,10 +296,10 @@ class Order(models.Model):
         return order
 
     def get_absolute_url(self):
-        return reverse("order-detail", kwargs={"pk": self.pk})
+        return reverse("docbox:order-detail", kwargs={"pk": self.pk})
 
     def get_absolute_edit_url(self):
-        return reverse("order-edit", kwargs={"pk": self.pk})
+        return reverse("docbox:order-edit", kwargs={"pk": self.pk})
 
     class Meta:
         verbose_name = "Заказ"

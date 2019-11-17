@@ -1,5 +1,5 @@
 <h5 class="mt-5">Последние платежи:</h5>
-  <form method="post" action="{% url 'new-transaction' %}">
+  <form method="post" action="{% url 'docbox:new-transaction' %}">
       {{ formset.management_form }}
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.path }}">
@@ -29,7 +29,7 @@
           </td>
           <td class="form-group align-middle text-center">
           {% if form.transaction_id.value %}
-            <a class="text-reset" href="{% url 'delete-transaction' form.transaction_id.value %}?next={{ request.path }}">
+            <a class="text-reset" href="{% url 'docbox:delete-transaction' form.transaction_id.value %}?next={{ request.path }}">
               <span class="fas fa-times fa-fw"></span>
             </a>
           {% endif %}

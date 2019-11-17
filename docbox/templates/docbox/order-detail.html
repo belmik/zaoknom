@@ -18,7 +18,7 @@
 
     <dt class="col-sm-2  offset-sm-3">Заказчик:</dt>
     <dd class="col-sm-4">
-        <a href="{% url 'client-detail' object.client.pk %}" class="text-reset">
+        <a href="{% url 'docbox:client-detail' object.client.pk %}" class="text-reset">
         {{ object.client.name }}
         </a>    
     </dd>    

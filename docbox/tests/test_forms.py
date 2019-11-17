@@ -8,7 +8,7 @@ from docbox.models import Client, Order
 class NewOrderFormTestCase(BaseTestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.form_url = reverse("new-order")
+        cls.form_url = reverse("docbox:new-order")
         cls.valid_data = {
             "name": "Новый Заказчик",
             "phone": "0970000000",
@@ -24,11 +24,11 @@ class NewOrderFormTestCase(BaseTestCase):
 
     def test_redirect(self):
         r = self.client.post(self.form_url, data=self.valid_data)
-        self.assertRedirects(r, reverse("orders-list"))
+        self.assertRedirects(r, reverse("docbox:orders-list"))
 
     def test_create_valid_order(self):
         self.client.post(self.form_url, data=self.valid_data)
-        r = self.client.get(reverse("orders-list"))
+        r = self.client.get(reverse("docbox:orders-list"))
         self.assertContains(r, self.valid_data["name"])
 
     def test_name_field_requered(self):
@@ -62,7 +62,7 @@ class EditOrderFormCase(BaseTestCase):
 
     def test_valid_redirect(self):
         r = self.client.post(self.order.get_absolute_edit_url(), self.post_data)
-        self.assertRedirects(r, reverse("orders-list"))
+        self.assertRedirects(r, reverse("docbox:orders-list"))
 
     def test_client_switch(self):
         self.client.post(self.order.get_absolute_edit_url(), self.post_data)
@@ -134,7 +134,7 @@ class NewTransactionFormCase(BaseTestCase):
             "form-0-amount": amount,
             "form-0-comment": "тестовая транзакция",
         }
-        url = reverse("new-transaction")
+        url = reverse("docbox:new-transaction")
         r = self.client.post(url, data=data, follow=True)
         self.order.refresh_from_db()
         self.assertEqual(self.order.remaining, self.total_price - amount)

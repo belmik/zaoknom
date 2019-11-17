@@ -86,7 +86,7 @@ class EditClient(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
     model = Client
 
     def get_success_url(self):
-        return reverse("client-detail", args=[self.object.pk])
+        return reverse("docbox:client-detail", args=[self.object.pk])
 
 
 class OrdersList(LoginRequiredMixin, ListView):
@@ -151,7 +151,7 @@ class OrderDetail(LoginRequiredMixin, DetailView):
 class NewTransaction(LoginRequiredMixin, FormView):
     template_name = "docbox/new-transaction.html"
     form_class = modelformset_factory(Transaction, form=NewTransactionForm)
-    success_url = reverse_lazy("orders-list")
+    success_url = reverse_lazy("docbox:orders-list")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -163,11 +163,11 @@ class NewTransaction(LoginRequiredMixin, FormView):
         self.next = self.request.POST.get("next", False)
 
         if self.next:
-            empty, model, pk = self.next.split("/")
-            if model == "order":
-                self.object = Order.objects.get(pk=pk)
-            if model == "client":
-                self.object = Client.objects.get(pk=pk)
+            match = resolve(self.next)
+            if match.url_name == "order-detail":
+                self.object = Order.objects.get(pk=match.kwargs["pk"])
+            if match.url_name == "client-detail":
+                self.object = Client.objects.get(pk=match.kwargs["pk"])
 
         return super().post(request, *args, **kwargs)
 
@@ -232,7 +232,7 @@ class NewOrder(LoginRequiredMixin, DocboxFormViewBase):
     template_name = "docbox/new-order.html"
     form_class = NewOrderForm
     initial = {"town": "Белгород-Днестровский"}
-    success_url = reverse_lazy("orders-list")
+    success_url = reverse_lazy("docbox:orders-list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -247,7 +247,7 @@ class NewOrder(LoginRequiredMixin, DocboxFormViewBase):
 class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
     template_name = "docbox/edit-order.html"
     form_class = EditOrderForm
-    success_url = reverse_lazy("orders-list")
+    success_url = reverse_lazy("docbox:orders-list")
 
     def get(self, request, *args, **kwargs):
         order_pk = request.resolver_match.kwargs["pk"]

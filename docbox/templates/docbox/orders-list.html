@@ -59,16 +59,16 @@
       <td>{{ order.provider_code}}</td>
       <td>{{ order.get_status_display }}</td>
       <td>
-        <a class="text-reset" href="{% url 'client-detail' order.client.pk %}">
+        <a class="text-reset" href="{% url 'docbox:client-detail' order.client.pk %}">
           {{ order.client.name }}
         </a>
       </td>
       <td>{{ order.client.phone }}</td>
       <td>
-        <a class="text-reset" href="{% url 'order-detail' order.pk %}">
+        <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
             <span class="fas fa-eye fa-fw"></span>
         </a>
-        <a class="text-reset" href="{% url 'order-edit' order.pk %}">
+        <a class="text-reset" href="{% url 'docbox:order-edit' order.pk %}">
             <span class="fas fa-pen fa-fw"></span>
         </a>
       </td>
