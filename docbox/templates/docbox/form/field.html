@@ -1,0 +1,16 @@
+{% if prepend %}
+<div class="input-group-prepend" style="height: 38px;">
+    <span class="input-group-text">{{ prepend }}</span>
+</div>
+{% endif %}
+{{ field }}
+{% if append %}
+<div class="input-group-append" style="height: 38px;">
+    <span class="input-group-text">{{ append }}</span>
+</div>
+{% endif %}
+{% if field.errors %}
+<div class="invalid-feedback">
+    {{ field.errors.0 }}
+</div>
+{% endif %}

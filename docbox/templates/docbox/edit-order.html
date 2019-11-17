@@ -1,0 +1,156 @@
+{% extends 'docbox/base.html' %}
+
+{% block page_header %}
+Редактирование заказа
+{% endblock page_header %}
+
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="typeahead__container form-group col-md-6">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.name %}
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            {% include "docbox/form/field.html" with field=form.phone %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.category %}
+        </div>
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.provider_name %}
+        </div>
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.status %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            {% include "docbox/form/field.html" with field=form.provider_code %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col-6 mb-3">
+            {% include "docbox/form/field.html" with field=form.total prepend="Cумма заказа:" append="грн." %}
+        </div>
+        <div class="input-group col-md-6 mb-3">
+            <div class="input-group-prepend" style="height: 38px;">
+                <span class="input-group-text">Остаток</span>
+            </div>
+            <input class="form-control text-right"  id="id_remaining" type="text" placeholder="Остаток" value="0" disabled>
+            <div class="input-group-append" style="height: 38px;">
+                <span class="input-group-text">грн.</span>
+            </div>
+        </div>
+    </div>
+    <div id="mountingGroup" class="form-row border rounded my-5 py-2">
+        <div class="form-group col-12">
+            <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="mountingSwitch">
+            <label class="custom-control-label" for="mountingSwitch">Монтаж/Доставка</label>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.mounter_name %}
+        </div>
+        <div class="input-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.mounting_price append="грн."%}
+        </div>
+        <div class="input-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.delivery_price append="грн."%}
+        </div>
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.town %}
+        </div>
+        <div class="form-group col-md-2">
+            {% include "docbox/form/field.html" with field=form.street_type %}
+        </div>
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.street %}
+        </div>
+        <div class="form-group col-md-1">
+            {% include "docbox/form/field.html" with field=form.building %}
+        </div>
+        <div class="form-group col-md-1">
+            {% include "docbox/form/field.html" with field=form.apartment %}
+        </div>
+    </div>
+    <div class="form-row my-5">
+        <div class="form-group date-group col-4">
+            {{ form.date_created.label_tag }}
+            {% include "docbox/form/field.html" with field=form.date_created %}
+        </div>
+        <div class="form-group date-group col-4">
+            {{ form.date_delivery.label_tag }}
+            {% include "docbox/form/field.html" with field=form.date_delivery %}
+        </div>
+        <div class="form-group date-group col-4">
+            {{ form.date_mounting.label_tag}}
+            {% include "docbox/form/field.html" with field=form.date_mounting %}
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Обновить">
+    </div>
+
+</form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+$.typeahead({
+    input: ".js-typeahead",
+    order: "asc",
+    templateValue: '{% templatetag openvariable %}name{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for item in clients_list %}{
+            display: '{{ item }}',
+            name: '{{ item.name }}',
+            phone: '{{ item.phone }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_phone").val(item.phone);
+        },
+        onCancel: function(node, event){
+            $("#id_phone").val("");
+        },
+    }
+    
+});
+$(function(){
+    var total = {{ form.total.value }}
+    var paid = {{ transactions_sum }}
+    $("#id_remaining").val(total-paid)
+
+    {% if form.mounting_price.value or form.delivery_price.value or form.street.value %}
+    $("#mountingSwitch").prop("checked", true).change()
+    {% else %}
+    $("#mountingSwitch").prop("checked", false).change()
+    {% endif %}
+});
+$("#id_total").change(function(){
+    var total = $(this).val();
+    var paid = {{ transactions_sum }}
+    $("#id_remaining").val(total-paid);
+  });
+
+$("#mountingSwitch").change(function(e){
+    if ($(this).prop("checked") == false){
+        $("#mountingGroup input, #mountingGroup select").slice(1).prop("disabled", true);
+        return;
+    }
+    $("#mountingGroup input, #mountingGroup select").slice(1).prop("disabled", false);
+  });
+</script>
+{% endblock scripts %}

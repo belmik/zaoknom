@@ -1,0 +1,40 @@
+from collections import namedtuple, UserDict
+
+from django import template
+from django.urls import reverse
+
+
+register = template.Library()
+
+
+@register.inclusion_tag("docbox/main-menu.html", takes_context=True)
+def main_menu(context):
+    MenuItem = namedtuple(
+        "MenuItem",
+        "name, url, fa_icon_name, add_url, active_link_cls"
+        )
+    menu = [
+        ("Заказы", "orders-list", "fa-copy", "new-order"),
+        ("Клиенты", "clients-list", "fa-users", ""),
+    ]
+
+    active_class_name = " active"
+    current_url_name = context.request.resolver_match.url_name
+
+    menu_list = []
+
+    for name, url_name, fa_icon_name, add_url_name in menu:
+        url = reverse(url_name)
+
+        add_url = ""
+        if add_url_name:
+            add_url = reverse(add_url_name)
+
+        active_link_cls = ""
+        if url_name == current_url_name:
+            active_link_cls = active_class_name
+
+        menu_list.append(MenuItem(name, url, fa_icon_name, add_url, active_link_cls))
+
+    return {"menu": menu_list}
+

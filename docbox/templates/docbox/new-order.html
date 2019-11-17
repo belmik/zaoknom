@@ -1,0 +1,93 @@
+{% extends 'docbox/base.html' %}
+
+{% block page_header %}
+Оформление нового заказа
+{% endblock page_header %}
+
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="typeahead__container form-group col-md-6">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.name %}
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            {% include "docbox/form/field.html" with field=form.phone %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.town %}
+        </div>
+        <div class="form-group col-md-2">
+            {% include "docbox/form/field.html" with field=form.street_type %}
+        </div>
+        <div class="form-group col-md-4">
+            {% include "docbox/form/field.html" with field=form.street %}
+        </div>
+        <div class="form-group col-md-1">
+            {% include "docbox/form/field.html" with field=form.building %}
+        </div>
+        <div class="form-group col-md-1">
+            {% include "docbox/form/field.html" with field=form.apartment %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col-md-4 mb-3">
+            {% include "docbox/form/field.html" with field=form.total append="грн."%}
+        </div>
+        <div class="input-group col-md-4 mb-3">
+            {% include "docbox/form/field.html" with field=form.advance_amount append="грн."%}
+        </div>
+        <div class="input-group col-md-4 mb-3">
+            <input class="form-control text-right"  id="new_order_remaining" type="text" placeholder="Остаток" disabled>
+            <div class="input-group-append" style="height: 38px;">
+                <span class="input-group-text">грн.</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Создать">
+    </div>
+</form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+$.typeahead({
+    input: ".js-typeahead",
+    order: "asc",
+    templateValue: '{% templatetag openvariable %}name{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for item in clients_list %}{
+            display: '{{ item }}',
+            name: '{{ item.name }}',
+            phone: '{{ item.phone }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_phone").val(item.phone);
+        },
+        onCancel: function(node, event){
+            $("#id_phone").val("");
+        },
+    }
+    
+});
+
+$("#id_advance_amount, #id_total").change(function(){
+    var total = $("#id_total").val();
+    var advance_amount = $("#id_advance_amount").val();
+    var remaining = total - advance_amount;
+    $("#new_order_remaining").val(remaining);
+  });
+</script>
+{% endblock scripts %}

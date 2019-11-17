@@ -1,0 +1,94 @@
+{% load static %}
+{% load docbox_menu %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/x-icon" href="{% static 'docbox/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'docbox/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'docbox/css/bootstrap-table.min.css' %}">
+    <link rel="stylesheet" href="{% static 'docbox/css/bootstrap-datepicker3.standalone.min.css' %}">
+    <link rel="stylesheet" href="{% static 'docbox/css/jquery.typeahead.min.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet"> 
+    <title>Docbox</title>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <link href="{% static 'docbox/css/dashboard.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-auto d-none d-md-block sidebar">
+                <div class="sidebar-sticky bg-light">
+                    <h2 class="pt-3 pb-2 px-3 mb-3 border-bottom text-uppercase">
+                        <a href="/" class="text-reset">За Окном</a>
+                    </h2>
+                    {% main_menu %}
+                    <ul class="nav flex-column fixed-bottom" style="width:250px;">
+                        <li class="nav-item container">
+                            <div class="row mb-3">
+                                <a class="nav-link py-0" href="{% url "logout" %}">
+                                    Выйти
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item container">
+                            <div class="row mb-3">
+                                <a class="nav-link py-0" href="{% url "social:begin" "github" %}">
+                                    <span class="mr-2 fas fa-fw fa-user"></span>google-oauth2
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item container">
+                            <div class="row mb-3">
+                                <a class="nav-link py-0" href="{% url 'export-csv' %}">
+                                    <span class="mr-2 fas fa-fw fa-file-export"></span>Скачать все заказы
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col ml-sm-auto px-4">
+                <h2 class="pt-3 pb-2 mb-3 border-bottom text-center">
+                    {% block page_header %}
+                    {% endblock page_header %}
+                </h2>
+                {% block content %}
+                {% endblock content %}
+            </main>
+        </div>
+    </div>
+    <script defer src="{% static 'docbox/js/fontawesome.js' %}"></script>
+    <script src="{% static 'docbox/js/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'docbox/js/popper.min.js' %}"></script>
+    <script src="{% static 'docbox/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'docbox/js/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'docbox/js/bootstrap-table-ru-RU.min.js' %}"></script>
+    <script src="{% static 'docbox/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'docbox/js/bootstrap-datepicker.ru.min.js' %}"></script>
+    <script src="{% static 'docbox/js/jquery.typeahead.min.js' %}"></script>
+    <script src="{% static 'docbox/js/main.js' %}"></script>
+    {% block scripts %}
+    {% endblock scripts %}
+</body>
+
+</html>

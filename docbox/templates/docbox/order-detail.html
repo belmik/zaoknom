@@ -1,0 +1,72 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_price %}
+
+{% block page_header %}
+Заказ: {{ object.provider_code }}
+<a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">
+  <span class="fas fa-pen fa-fw"></span>
+</a>
+{% endblock page_header %}
+
+{% block content %}
+<dl class="row">
+    <dt class="col-sm-2  offset-sm-3">Создан:</dt>
+    <dd class="col-sm-4">{{ object.date_created|date:'d.m.y' }}</dd>
+
+    <dt class="col-sm-2  offset-sm-3">Статус:</dt>
+    <dd class="col-sm-4">{{ object.get_status_display }}</dd>
+
+    <dt class="col-sm-2  offset-sm-3">Заказчик:</dt>
+    <dd class="col-sm-4">
+        <a href="{% url 'client-detail' object.client.pk %}" class="text-reset">
+        {{ object.client.name }}
+        </a>    
+    </dd>    
+
+    
+    {% if object.date_delivery %}
+        <dt class="col-sm-2  offset-sm-3">Доставка:</dt>
+        <dd class="col-sm-4">{{ object.date_delivery|date:'d.m.y' }}</dd>
+    {% endif %}
+
+    {% if object.date_mounting %}
+        <dt class="col-sm-2  offset-sm-3">Монтаж:</dt>
+        <dd class="col-sm-4">{{ object.date_mounting|date:'d.m.y' }}</dd>
+    {% endif %}
+
+    {% if object.date_finished %}
+        <dt class="col-sm-2  offset-sm-3">Закрыт:</dt>
+        <dd class="col-sm-4">{{ object.date_finished|date:'d.m.y' }}</dd>
+    {% endif %}
+
+    {% if object.address %}
+        <dt class="col-sm-2  offset-sm-3">Адрес:</dt>
+        <dd class="col-sm-4">{{ object.address }}</dd>
+    {% endif %}
+
+    {% if object.mounter %}
+        <dt class="col-sm-2  offset-sm-3">Монтаж:</dt>
+        <dd class="col-sm-4">{{ object.mounter }} [{{ object.price.mounting|price }}]</dd>
+    {% endif %}
+
+    {% if object.price %}
+        {% if object.price.mounting %}
+            <dt class="col-sm-2  offset-sm-3">Cумма с монтажем:</dt>
+        {% else %}
+            <dt class="col-sm-2  offset-sm-3">Cумма:</dt>
+        {% endif %}
+        <dd class="col-sm-4">{{ object.price.total|price }}</dd>
+    {% endif %}
+
+    {% if object.remaining > 0 %}
+        <dt class="col-sm-2  offset-sm-3">Текущий остаток:</dt>
+        <dd class="col-sm-4">{{ object.remaining|price }}</dd>
+    {% endif %}
+
+</dl>
+<div class="row">
+<div class="col-sm-6 offset-sm-3">
+  {% include "docbox/transactions_form.html" with formset=formset %}
+</div>
+</div>
+{% endblock content %}

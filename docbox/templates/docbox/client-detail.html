@@ -1,0 +1,56 @@
+{% extends 'docbox/base.html' %}
+
+{% load docbox_price %}
+
+{% block page_header %}
+{{ object.name }} {% if object.phone %}[{{ object.phone }}]{% endif %}
+<a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">
+  <span class="fas fa-pen fa-fw"></span>
+</a>
+{% endblock page_header %}
+
+{% block content %}
+<dl class="row">
+    <dt class="col-sm-2  offset-sm-3">Общий остаток:</dt>
+    <dd class="col-sm-4">{{ object.remaining|price }}</dd>
+</dl>
+<div class="row">
+<div class="col-sm-7">
+  <h5 class="mt-5">Последние заказы:</h5>
+    <table class="table table-striped table-borderless">
+        <thead>
+            <tr>
+                <th scope="col">Дата</th>
+                <th scope="col">Номер заказа</th>
+                <th scope="col">Статус</th>
+                <th scope="col">Сумма</th>
+                <th scope="col">Остаток</th>
+                <th scope="col">Инструменты</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for order in object.last_orders %}
+        <tr>
+            <td>{{ order.date_created|date:'d.m.y' }}</td>
+            <td>{{ order.provider_code }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td class="text-right">{{ order.price.total|price }}</td>
+            <td class="text-right">{{ order.remaining|price }}</td>
+            <td>
+            <a class="text-reset" href="{% url 'order-detail' order.pk %}">
+                <span class="fas fa-eye fa-fw"></span>
+            </a>
+            <a class="text-reset" href="{% url 'order-edit' order.pk %}">
+                <span class="fas fa-pen fa-fw"></span>
+            </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-sm-5">
+  {% include "docbox/transactions_form.html" with formset=formset %}
+</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% extends 'docbox/base.html' %}
+
+{% block page_header %}
+Редактирование клиента
+{% endblock page_header %}
+
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            {% include "docbox/form/field.html" with field=form.name %}
+        </div>
+        <div class="form-group col-md-6">
+            {% include "docbox/form/field.html" with field=form.phone %}
+        </div>
+        <div class="form-group col">
+            {% include "docbox/form/field.html" with field=form.info %}
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Обновить">
+    </div>
+
+</form>
+</div>
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% extends 'docbox/base.html' %}
+
+{% block page_header %}
+Клиенты
+{% endblock page_header %}
+
+{% block content %}
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col" class="border-top-0">Имя</th>
+      <th scope="col" class="border-top-0">Телефон</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for client in object_list %}
+    <tr>
+        <td>
+            <a href="{% url 'client-detail' client.client_id %}" class="text-reset">{{ client.name }}</a>
+        </td>
+      <td>{{ client.phone }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+    
+{% endblock content %}

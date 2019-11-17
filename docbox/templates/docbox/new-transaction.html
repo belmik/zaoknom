@@ -1,0 +1,27 @@
+{% extends 'docbox/base.html' %}
+
+{% block page_header %}
+Создание новой транзакции
+{% endblock page_header %}
+
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+<form method="post">
+    {% csrf_token %}
+    {% for item in form %}
+        {{ item.errors }}
+    {% endfor %}
+    
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Создать">
+    </div>
+</form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+
+</script>
+{% endblock scripts %}

@@ -1,0 +1,30 @@
+{% extends 'docbox/base.html' %}
+
+
+{% block page_header %}
+Удаление транзакции
+{% endblock page_header %}
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+{% for label, value in info_fields %}
+    <div class="row">
+        <div class="col-3">
+            <p>{{ label }}:</p>
+        </div>
+        <div class="col-9">
+            <p class="font-weight-bold">{{ value }}</p>
+        </div>
+    </div>
+{% endfor %}
+    <form method="post">
+    {% csrf_token %}
+    {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+    {% endif %}
+    <div class="form-row text-center mb-5">
+        <input type="submit" class="mx-auto mt-5 btn btn-danger" value="Удалить">
+    </div>
+    </form>
+</div>
+{% endblock content %}
