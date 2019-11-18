@@ -42,6 +42,10 @@ class DocboxFormViewBase(FormView):
             attrs.update({"class": field_class.strip()})
 
 
+class ZaoknomView(TemplateView):
+    template_name = "zaoknom/index.html"
+
+
 class HomeView(LoginRequiredMixin, ListView):
     template_name = "docbox/home.html"
     model = Order
