@@ -1,0 +1,36 @@
+.top {
+    text-align: center;
+    margin-top: 15%;
+}
+
+.gallery h2{
+    text-align: center;
+    margin-top: 40px;
+}
+
+.objects-gallery {
+  text-align: center;
+}
+.objects-gallery .gallery-item{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+  display: inline-block;
+  margin: 12px;
+  width: auto;
+  line-height: 0;
+}
+
+
+
+.objects-gallery .gallery-item img {
+  width: auto;
+}
+
+.map iframe{
+    width: 100%;
+}
+
+.map h2{
+    text-align: center;
+    margin-top: 40px;
+}

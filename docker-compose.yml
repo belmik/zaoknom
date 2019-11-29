@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+  web:
+    build: .
+    command: gunicorn docbox.wsgi:application --bind 0.0.0.0:8000 --capture-output
+    environment:
+      - SECRET_KEY
+      - DEBUG
+      - ALLOWED_HOSTS
+      - DB_ENGINE
+      - DB_NAME
+      - DB_USER
+      - DB_HOST
+      - LOGIN_URL
+      - SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY
+      - SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET
+      - SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_WHITELISTED_EMAILS
+      - SOCIAL_AUTH_GITHUB_KEY
+      - SOCIAL_AUTH_GITHUB_SECRET
+      - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
+    depends_on:
+      - db
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
+
+volumes:
+  db:

@@ -72,6 +72,11 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "nginx", "static")
+STATICFILES_DIRS = [
+    ("docbox", os.path.join(BASE_DIR, "static", "docbox")),
+    ("zaoknom", os.path.join(BASE_DIR, "static", "zaoknom")),
+]
 
 LOGIN_URL = os.getenv("LOGIN_URL")
 LOGIN_REDIRECT_URL = "/"

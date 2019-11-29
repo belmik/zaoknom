@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from .base import BaseTestCase
 from django.urls import reverse
@@ -76,8 +76,8 @@ class EditOrderFormCase(BaseTestCase):
             "provider_code": "11111",
             "status": "finished",
             "category": "pvc",
-            "date_delivery": date(today.year, today.month, today.day + 10),
-            "date_mounting": date(today.year, today.month, today.day + 11),
+            "date_delivery": today + timedelta(days=10),
+            "date_mounting": today + timedelta(days=11),
         }
         self.post_data.update(order_nonref_fields)
 
