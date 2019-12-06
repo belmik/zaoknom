@@ -1,24 +1,23 @@
 import csv
 from datetime import date, datetime, timedelta
 
-from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import modelformset_factory
+from django.http import HttpResponse
+from django.urls import resolve, reverse, reverse_lazy
+from django.utils import formats
 from django.views.generic import (
-    View,
-    TemplateView,
-    ListView,
+    DeleteView,
     DetailView,
     FormView,
-    DeleteView,
+    ListView,
+    TemplateView,
     UpdateView,
+    View,
 )
-from django.urls import reverse_lazy, resolve, Resolver404, reverse
-from django.utils import formats
-from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
 
+from docbox.forms import EditClientForm, EditOrderForm, NewOrderForm, NewTransactionForm
 from docbox.models import Client, Order, Transaction
-from docbox.forms import NewOrderForm, EditOrderForm, NewTransactionForm, EditClientForm
 
 
 class DocboxFormViewBase(FormView):
@@ -73,7 +72,7 @@ class ClientDetail(LoginRequiredMixin, DetailView):
         TransactionsFormSet = modelformset_factory(Transaction, form=NewTransactionForm)
         formset = TransactionsFormSet(
             queryset=self.object.transactions.order_by("-date")[:5],
-            initial=[{"client": self.object.pk,}],
+            initial=[{"client": self.object.pk}],
         )
 
         # It's not possible to rearange only initial forms in queryset, so I did this.
@@ -146,7 +145,7 @@ class OrderDetail(LoginRequiredMixin, DetailView):
         TransactionsFormSet = modelformset_factory(Transaction, form=NewTransactionForm)
         formset = TransactionsFormSet(
             queryset=self.object.transactions,
-            initial=[{"order": self.object.pk, "client": self.object.client.pk,}],
+            initial=[{"order": self.object.pk, "client": self.object.client.pk}],
         )
         context["formset"] = formset
         return context
@@ -192,7 +191,7 @@ class NewTransaction(LoginRequiredMixin, FormView):
     def get_initial(self):
         if isinstance(self.object, Order):
             self.initial = [
-                {"order": self.object.order_id, "client": self.object.client.client_id,}
+                {"order": self.object.order_id, "client": self.object.client.client_id}
             ]
         if isinstance(self.object, Client):
             self.initial = [{"client": self.object.pk}]

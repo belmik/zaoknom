@@ -1,0 +1,33 @@
+repos:
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        stages: [commit]
+        language: system
+        entry: pipenv run isort
+        types: [python]
+
+      - id: black
+        name: black
+        stages: [commit]
+        language: system
+        entry: pipenv run black
+        args: [--line-length=95]
+        types: [python]
+
+      - id: flake8
+        name: flake8
+        stages: [commit]
+        language: system
+        entry: pipenv run flake8
+        types: [python]
+        exclude: migrations
+
+      - id: django-test
+        name: django test
+        stages: [commit]
+        language: system
+        entry: pipenv run python manage.py test
+        types: [python]
+        pass_filenames: false

@@ -1,20 +1,19 @@
-from django.forms import (
-    Form,
-    ModelForm,
-    CharField,
-    UUIDField,
-    DecimalField,
-    ChoiceField,
-    HiddenInput,
-    TextInput,
-    Textarea,
-    IntegerField,
-    DateField,
-    ChoiceField,
-    ModelChoiceField,
-)
 from django.core.exceptions import ObjectDoesNotExist
-from docbox.models import Address, Client, Order, Transaction, Price, Provider, Mounter
+from django.forms import (
+    CharField,
+    ChoiceField,
+    DateField,
+    DecimalField,
+    Form,
+    HiddenInput,
+    IntegerField,
+    ModelChoiceField,
+    ModelForm,
+    Textarea,
+    TextInput,
+)
+
+from docbox.models import Address, Client, Mounter, Order, Price, Provider, Transaction
 from docbox.validators import validate_phone
 
 
@@ -281,5 +280,5 @@ class EditClientForm(DocboxFormMixin, ModelForm):
         model = Client
         fields = ["name", "phone", "info"]
         widgets = {
-            "info": Textarea({"rows": '3'}),
+            "info": Textarea({"rows": "3"}),
         }

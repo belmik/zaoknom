@@ -1,9 +1,10 @@
-from pathlib import Path
-from pprint import pprint
 import csv
+from pathlib import Path
 
-from django.core.management.base import BaseCommand, CommandError
-from docbox.models import Client, Mounter, Provider, Address, Price, Transaction, Order
+from django.core.management.base import BaseCommand
+
+from docbox.models import Address, Client, Mounter, Order, Price, Transaction
+
 from ._order import OrderData
 
 
@@ -46,7 +47,6 @@ class Command(BaseCommand):
     def save_order(self, order):
         """ Saves cleaned order to the database. """
 
-        order_defaults = {}
         client, created = Client.objects.get_or_create(name=order.client, phone=order.phone)
 
         if order.mounter:

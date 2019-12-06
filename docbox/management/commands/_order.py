@@ -1,5 +1,4 @@
 import re
-
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
@@ -41,7 +40,7 @@ class OrderData:
 
         if "долг" in self.provider_code:
             return False
-        
+
         if not self.products_price:
             return False
 
@@ -75,7 +74,7 @@ class OrderData:
 
     def normalize_phone(self):
         if self.phone:
-            self.phone = re.sub("\s*?", "", self.phone).rjust(10, "0")
+            self.phone = re.sub(r"\s*?", "", self.phone).rjust(10, "0")
 
     def normalize_transactions(self):
         transactions = [
@@ -130,7 +129,7 @@ class OrderData:
 
     def str_to_decimal(self, str_decimal: str) -> Decimal:
         """ If str_decimal is not empty convert to Decimal obj and return it."""
-        str_decimal = re.sub("\s*?", "", str_decimal)
+        str_decimal = re.sub(r"\s*?", "", str_decimal)
         if not str_decimal:
             return Decimal(0)
 
@@ -143,4 +142,3 @@ class OrderData:
     def __repr__(self):
         """ Returns order string representation. """
         return f"[{self.date_created}, {self.client}, {self.products_price}]"
-

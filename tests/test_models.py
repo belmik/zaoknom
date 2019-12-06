@@ -1,5 +1,6 @@
 from django.test import TestCase
-from docbox.models import Order, Client, Transaction, Price
+
+from docbox.models import Client, Order, Price, Transaction
 
 
 class OrderModelTestCase(TestCase):

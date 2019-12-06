@@ -1,5 +1,6 @@
-from django.urls import path, include
 from django.contrib.auth.views import LogoutView
+from django.urls import include, path
+
 from . import views
 
 docbox_patterns = (

@@ -1,8 +1,7 @@
-from collections import namedtuple, UserDict
+from collections import namedtuple
 
 from django import template
 from django.urls import reverse
-
 
 register = template.Library()
 
@@ -36,4 +35,3 @@ def main_menu(context):
         menu_list.append(MenuItem(name, url, fa_icon_name, add_url, active_link_cls))
 
     return {"menu": menu_list}
-

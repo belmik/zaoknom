@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from docbox.models import Order, Client, Mounter, Address, Price, Provider
+
+from docbox.models import Address, Client, Mounter, Order, Price, Provider
 
 
 class BaseTestCase(TestCase):
@@ -14,7 +15,9 @@ class BaseTestCase(TestCase):
         client_mounter = Client.objects.create(name="Тестовый монтажник")
         mounter = Mounter.objects.create(name=client_mounter)
         provider = Provider.objects.create(name="Тестовый Поставщик")
-        price = Price.objects.create(total=self.total_price, provider=3500, delivery=100, mounting=400)
+        price = Price.objects.create(
+            total=self.total_price, provider=3500, delivery=100, mounting=400
+        )
         address = Address.objects.create(
             town="Тестовый город", street="Тестовая", building="10", apartment="1"
         )
@@ -34,4 +37,3 @@ class BaseTestCase(TestCase):
             date_mounting="2019-10-11",
             date_finished="2019-10-12",
         )
-

@@ -1,8 +1,10 @@
 from datetime import date, timedelta
 
-from .base import BaseTestCase
 from django.urls import reverse
-from docbox.models import Client, Order
+
+from docbox.models import Client
+
+from .base import BaseTestCase
 
 
 class NewOrderFormTestCase(BaseTestCase):
@@ -135,6 +137,6 @@ class NewTransactionFormCase(BaseTestCase):
             "form-0-comment": "тестовая транзакция",
         }
         url = reverse("docbox:new-transaction")
-        r = self.client.post(url, data=data, follow=True)
+        self.client.post(url, data=data, follow=True)
         self.order.refresh_from_db()
         self.assertEqual(self.order.remaining, self.total_price - amount)

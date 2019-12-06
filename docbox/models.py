@@ -1,8 +1,9 @@
-from uuid import uuid4
 from datetime import date
+from uuid import uuid4
 
 from django.db import models
 from django.urls import reverse
+
 from docbox.validators import validate_phone
 
 
