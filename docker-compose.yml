@@ -22,8 +22,6 @@ services:
       - SOCIAL_AUTH_GITHUB_KEY
       - SOCIAL_AUTH_GITHUB_SECRET
       - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
-      - SSL_CERT
-      - SSL_KEY
     depends_on:
       - db
   nginx:
