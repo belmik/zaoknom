@@ -7,30 +7,39 @@ services:
       - db:/var/lib/postgresql/data
   web:
     build: .
+    restart: always
     command: gunicorn docbox.wsgi:application --bind 0.0.0.0:8000 --capture-output
     environment:
+      - ALLOWED_HOSTS=zaoknom.pp.ua
+      - DEBUG=False
+      - DB_HOST=db
+      - DB_ENGINE=django.db.backends.postgresql
       - SECRET_KEY
-      - DEBUG
-      - ALLOWED_HOSTS
-      - DB_ENGINE
-      - DB_NAME
-      - DB_USER
-      - DB_HOST
-      - LOGIN_URL
-      - SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY
-      - SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET
-      - SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_WHITELISTED_EMAILS
+      - LOGIN_URL=/login/google-oauth2
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS
       - SOCIAL_AUTH_GITHUB_KEY
       - SOCIAL_AUTH_GITHUB_SECRET
       - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
+      - SSL_CERT
+      - SSL_KEY
     depends_on:
       - db
   nginx:
-    build: ./nginx
+    build: nginx
+    restart: always
+    environment:
+      - PROXY_PASS_ADDRESS=web:8000
+      - SSL_CERT
+      - SSL_KEY
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - web
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
 
 volumes:
   db:

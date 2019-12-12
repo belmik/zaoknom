@@ -5,9 +5,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG", False)
+DEBUG = os.getenv("DEBUG", False) == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(";")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost").split(";")
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -52,10 +52,10 @@ WSGI_APPLICATION = "docbox.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DB_ENGINE"),
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "HOST": os.getenv("DB_HOST"),
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("DB_NAME", "postgres"),
+        "USER": os.getenv("DB_USER", "postgres"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
         "ATOMIC_REQUESTS": True,
     }
 }
@@ -84,10 +84,11 @@ LOGOUT_REDIRECT_URL = "/"
 
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
-SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_KEY")
-SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_SECRET")
-SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_WHITELISTED_EMAILS = os.getenv(
-    "SOCIAL_AUTH_GOOGLE_OPENIDCONNECT_WHITELISTED_EMAILS"
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["openid", "https://www.googleapis.com/auth/userinfo.email"]
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS = os.getenv(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS"
 ).split(";")
 
 SOCIAL_AUTH_GITHUB_KEY = os.getenv("SOCIAL_AUTH_GITHUB_KEY")
@@ -96,3 +97,47 @@ SOCIAL_AUTH_GITHUB_SCOPE = ["user:email"]
 SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS = os.getenv(
     "SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS"
 ).split(";")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
+        "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
+    },
+    "formatters": {
+        "django.server": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "[%(server_time)s] %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+        },
+        "console_on_not_debug": {
+            "level": "WARNING",
+            "filters": ["require_debug_false"],
+            "class": "logging.StreamHandler",
+        },
+        "django.server": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "django.server",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "mail_admins", "console_on_not_debug"],
+            "level": "INFO",
+        },
+        "django.server": {"handlers": ["django.server"], "level": "INFO", "propagate": False},
+    },
+}
