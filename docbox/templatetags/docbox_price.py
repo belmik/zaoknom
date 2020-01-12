@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import template
 
 register = template.Library()
@@ -5,4 +7,7 @@ register = template.Library()
 
 @register.filter
 def price(value):
-    return f"{value:7,} грн.".replace(",", " ")
+    if isinstance(value, Decimal):
+        return f"{value:7,} грн.".replace(",", " ")
+
+    return "0 грн."
