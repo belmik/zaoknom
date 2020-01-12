@@ -133,7 +133,7 @@ $(function(){
     var paid = {{ transactions_sum }}
     $("#id_remaining").val(total-paid)
 
-    {% if form.mounting_price.value or form.delivery_price.value or form.street.value %}
+    {% if form.mounter_name.value or form.mounting_price.value or form.delivery_price.value or form.street.value %}
     $("#mountingSwitch").prop("checked", true).change()
     {% else %}
     $("#mountingSwitch").prop("checked", false).change()
