@@ -16,8 +16,10 @@ def main_menu(context):
 
     active_class_name = " active"
 
+    current_url_name = None
     match = context.request.resolver_match
-    current_url_name = f"{match.namespace}:{match.url_name}"
+    if match:
+        current_url_name = f"{match.namespace}:{match.url_name}"
 
     menu_list = []
 
