@@ -97,16 +97,13 @@ class NewOrderForm(DocboxFormMixin, Form):
         data = self.cleaned_data
         client, created = Client.objects.get_or_create(name=data["name"], phone=data["phone"])
 
-        address = None
-        default_town = Address._meta.get_field("town").default
-        if data["town"] == default_town and data["street"]:
-            address, created = Address.objects.get_or_create(
-                town=data["town"],
-                street_type=data["street_type"],
-                street=data["street"],
-                building=data["building"],
-                apartment=data["apartment"],
-            )
+        address = Address.objects.create(
+            town=data["town"],
+            street_type=data["street_type"],
+            street=data["street"],
+            building=data["building"],
+            apartment=data["apartment"],
+        )
 
         price = Price.objects.create(total=data["total"])
 

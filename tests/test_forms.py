@@ -14,7 +14,7 @@ class NewOrderFormTestCase(BaseTestCase):
         cls.valid_data = {
             "name": "Новый Заказчик",
             "phone": "0970000000",
-            "town": "Белгород-Днестровский",
+            "town": "Шабо",
             "street_type": "street",
             "street": "Тестовая",
             "building": "111",
@@ -28,10 +28,20 @@ class NewOrderFormTestCase(BaseTestCase):
         r = self.client.post(self.form_url, data=self.valid_data)
         self.assertRedirects(r, reverse("docbox:orders-list"))
 
-    def test_create_valid_order(self):
+    def test_client_name_save(self):
         self.client.post(self.form_url, data=self.valid_data)
         r = self.client.get(reverse("docbox:orders-list"))
         self.assertContains(r, self.valid_data["name"])
+
+    def test_clien_phone_save(self):
+        self.client.post(self.form_url, data=self.valid_data)
+        r = self.client.get(reverse("docbox:orders-list"))
+        self.assertContains(r, self.valid_data["phone"])
+
+    def test_town_save(self):
+        self.client.post(self.form_url, data=self.valid_data)
+        r = self.client.get(reverse("docbox:orders-list"))
+        self.assertContains(r, self.valid_data["town"])
 
     def test_name_field_requered(self):
         r = self.client.post(self.form_url, data={})
