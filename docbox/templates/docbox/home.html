@@ -35,7 +35,7 @@
                 {{ order.client.name }}
             </a>
             </td>
-            <td class="text-right">{{ order.remaining|price }}</td>
+            <td class="text-right text-nowrap">{{ order.remaining|price }}</td>
             <td>
             <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
                 <span class="fas fa-eye fa-fw"></span>
@@ -66,7 +66,7 @@
       {% for transaction in transactions %}
         <tr>
           <td>{{ transaction.date|date:'d.m.y' }}</td>
-          <td class="text-right">{{ transaction.amount|price }}</td>
+          <td class="text-right text-nowrap">{{ transaction.amount|price }}</td>
           <td>
             {% if transaction.client %}
             <a class="text-reset" href="{% url 'docbox:client-detail' transaction.client.pk %}">
