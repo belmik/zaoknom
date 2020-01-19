@@ -3,6 +3,7 @@ version: "3.7"
 services:
   db:
     image: postgres
+    restart: always
     volumes:
       - db:/var/lib/postgresql/data
   web:
