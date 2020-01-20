@@ -12,6 +12,7 @@ def main_menu(context):
     menu = [
         ("Заказы", "docbox:orders-list", "fa-copy", "docbox:new-order"),
         ("Клиенты", "docbox:clients-list", "fa-users", ""),
+        ("Бухгалтерия", "docbox:bookkeeping-orders", "fa-book", ""),
     ]
 
     active_class_name = " active"

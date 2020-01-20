@@ -155,6 +155,18 @@ class Price(models.Model):
         null=True,
     )
 
+    @property
+    def profit(self):
+        if self.provider:
+            return self.total - self.provider
+        return 0
+
+    @property
+    def extra_charge(self):
+        if self.profit:
+            return self.profit / self.provider
+        return 0
+
     class Meta:
         verbose_name = "Цена"
         verbose_name_plural = "цены"

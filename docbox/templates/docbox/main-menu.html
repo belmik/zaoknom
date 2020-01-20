@@ -2,11 +2,11 @@
     {% for item in menu %}
     <li class="nav-item container">
         <div class="row mb-3">
-            <a class="col-7 nav-link py-0{{ item.active_link_cls }}" href="{{ item.url }}">
+            <a class="col-9 nav-link py-0{{ item.active_link_cls }}" href="{{ item.url }}">
                 <span class="mr-2 fas fa-fw {{ item.fa_icon_name }}"></span>{{ item.name }}
             </a>
             {% if item.add_url %}
-            <a class="col-5" href="{{ item.add_url }}">
+            <a class="col-3" href="{{ item.add_url }}">
                 <span class="fas fa-plus fa-fw"></span>
             </a>
             {% endif %}

@@ -304,6 +304,38 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
         return context
 
 
+class BookkeepingOrders(LoginRequiredMixin, ListView):
+    template_name = "docbox/bookkeeping-orders.html"
+    model = Order
+    paginate_by = 50
+
+    date_format = formats.get_format_lazy("DATE_INPUT_FORMATS")[0]
+
+    def get(self, request, *args, **kwargs):
+        today = date.today()
+        quarter = timedelta(weeks=13)
+        def_strat_date = (today - quarter).replace(day=1)
+        def_strat_date = def_strat_date.strftime(self.date_format)
+        def_end_date = date(today.year + 1, 1, 1).strftime(self.date_format)
+        self.start_date = request.session.get("start_date", def_strat_date)
+        self.end_date = request.session.get("end_date", def_end_date)
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["start_date"] = self.start_date
+        context["end_date"] = self.end_date
+        return context
+
+    def get_queryset(self):
+        start_date = datetime.strptime(self.start_date, self.date_format)
+        end_date = datetime.strptime(self.end_date, self.date_format)
+
+        queryset = super().get_queryset()
+        queryset = queryset.filter(date_created__range=(start_date, end_date))
+        return queryset
+
+
 class CsvExport(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         today = date.today().strftime("%Y%m%d")
