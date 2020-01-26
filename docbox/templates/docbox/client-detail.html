@@ -15,7 +15,7 @@
     <dd class="col-sm-4">{{ object.remaining|price }}</dd>
 </dl>
 <div class="row">
-<div class="col-sm-7">
+<div class="col-xl-7">
   <h5 class="mt-5">Последние заказы:</h5>
     <table class="table table-striped table-borderless">
         <thead>
@@ -34,8 +34,8 @@
             <td>{{ order.date_created|date:'d.m.y' }}</td>
             <td>{{ order.provider_code }}</td>
             <td>{{ order.get_status_display }}</td>
-            <td class="text-right">{{ order.price.total|price }}</td>
-            <td class="text-right">{{ order.remaining|price }}</td>
+            <td class="text-right text-nowrap">{{ order.price.total|price }}</td>
+            <td class="text-right text-nowrap">{{ order.remaining|price }}</td>
             <td>
             <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
                 <span class="fas fa-eye fa-fw"></span>
@@ -49,7 +49,7 @@
         </tbody>
     </table>
 </div>
-<div class="col-sm-5">
+<div class="col-xl-5">
   {% include "docbox/transactions_form.html" with formset=formset %}
 </div>
 </div>
