@@ -63,6 +63,11 @@
         <dd class="col-sm-4">{{ object.remaining|price }}</dd>
     {% endif %}
 
+    {% if object.comment %}
+        <dt class="col-sm-2  offset-sm-3">Комментарий:</dt>
+        <dd class="col-sm-4">{{ object.comment }}</dd>
+    {% endif %}
+
 </dl>
 <div class="row">
 <div class="col-sm-6 offset-sm-3">

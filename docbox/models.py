@@ -261,6 +261,9 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
+    comment = models.TextField(
+        verbose_name="Комментарий", max_length=1024, blank=True, default="", null=True
+    )
     date_changed = models.DateField(verbose_name="Изменен", auto_now=True, null=True)
     date_delivery = models.DateField(verbose_name="Дата доставки", blank=True, null=True)
     date_mounting = models.DateField(verbose_name="Дата монтажа", blank=True, null=True)

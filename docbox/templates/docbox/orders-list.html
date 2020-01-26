@@ -92,6 +92,10 @@
           {% else %}
             <dt class="col-sm-2">Заказ оплачен</dt>
           {% endif %}
+          {% if order.comment %}
+              <dt class="col-sm-2">Комментарий:</dt>
+              <dd class="col-sm-10">{{ order.comment }}</dd>
+          {% endif %}
 
         </dl>
       </td>

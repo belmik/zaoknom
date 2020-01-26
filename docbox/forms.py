@@ -92,6 +92,9 @@ class NewOrderForm(DocboxFormMixin, Form):
         required=False,
         widget=TextInput({"class": "text-right"}),
     )
+    comment = CharField(
+        label="Комментарий", max_length=1024, required=False, widget=Textarea({"rows": 3})
+    )
 
     def save(self):
         data = self.cleaned_data
@@ -107,7 +110,9 @@ class NewOrderForm(DocboxFormMixin, Form):
 
         price = Price.objects.create(total=data["total"])
 
-        order = Order.objects.create(client=client, address=address, price=price)
+        order = Order.objects.create(
+            client=client, address=address, price=price, comment=data["comment"]
+        )
 
         if data["advance_amount"]:
             Transaction.objects.get_or_create(

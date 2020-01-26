@@ -289,6 +289,7 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
             "mounter_name": getattr(self.order, "mounter", ""),
             "delivery_price": self.order.price.delivery,
             "mounting_price": self.order.price.mounting,
+            "comment": self.order.comment,
         }
 
         if self.order.address:

@@ -36,6 +36,11 @@
         </div>
     </div>
     <div class="form-row">
+        <div class="form-group col-12">
+            {% include "docbox/form/field.html" with field=form.comment %}
+        </div>
+    </div>
+    <div class="form-row">
         <div class="input-group col-6 mb-3">
             {% include "docbox/form/field.html" with field=form.total prepend="Cумма заказа:" append="грн." %}
         </div>

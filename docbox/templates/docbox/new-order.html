@@ -50,6 +50,11 @@
             </div>
         </div>
     </div>
+    <div class="form-row">
+        <div class="form-group col">
+            {% include "docbox/form/field.html" with field=form.comment %}
+        </div>
+    </div>
     <div class="form-row text-center">
         <input type="submit" class="form-control btn btn-outline-secondary" value="Создать">
     </div>
