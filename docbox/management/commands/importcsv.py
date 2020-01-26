@@ -57,7 +57,7 @@ class Command(BaseCommand):
                 mounter = Mounter.objects.create(name=client_and_mounter)
 
         if order.address:
-            address, created = Address.objects.get_or_create(info=order.address)
+            address, created = Address.objects.get_or_create(address_info=order.address)
 
         try:
             new_order = Order.objects.get(

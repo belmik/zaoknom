@@ -300,6 +300,7 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
                     "street": self.order.address.street,
                     "building": self.order.address.building,
                     "apartment": self.order.address.apartment,
+                    "address_info": self.order.address.address_info,
                 }
             )
         return data.copy()

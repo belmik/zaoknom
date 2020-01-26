@@ -179,6 +179,13 @@ class EditOrderForm(NewOrderForm):
         widget=TextInput({"class": "text-right"}),
     )
 
+    address_info = CharField(
+        label="Дополнительная информация",
+        max_length=1024,
+        required=False,
+        widget=Textarea({"rows": 3}),
+    )
+
     def save(self, order):
         self.order = order
 

@@ -85,6 +85,9 @@
         <div class="form-group col-md-1">
             {% include "docbox/form/field.html" with field=form.apartment %}
         </div>
+        <div class="form-group col">
+            {% include "docbox/form/field.html" with field=form.address_info %}
+        </div>
     </div>
     <div class="form-row my-5">
         <div class="form-group date-group col-4">
@@ -100,7 +103,7 @@
             {% include "docbox/form/field.html" with field=form.date_mounting %}
         </div>
     </div>
-    <div class="form-row text-center">
+    <div class="form-row text-center mb-5">
         <input type="submit" class="form-control btn btn-outline-secondary" value="Обновить">
     </div>
 

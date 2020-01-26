@@ -111,7 +111,7 @@ class Address(models.Model):
     street = models.CharField(verbose_name="Улица", max_length=64, blank=True)
     building = models.CharField(verbose_name="Дом", max_length=8, blank=True)
     apartment = models.PositiveIntegerField(verbose_name="Квартира", blank=True, null=True)
-    info = models.TextField(verbose_name="Заметка", max_length=1024, blank=True)
+    address_info = models.TextField(verbose_name="Заметка", max_length=1024, blank=True)
 
     def __str__(self):
         address = self.town
@@ -121,8 +121,8 @@ class Address(models.Model):
             address += f", д. {self.building}"
         if self.apartment:
             address += f", кв. {self.apartment}"
-        if self.info:
-            address += f", {self.info}"
+        if self.address_info:
+            address += f", {self.address_info}"
 
         return address
 
