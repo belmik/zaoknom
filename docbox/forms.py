@@ -279,3 +279,15 @@ class EditClientForm(DocboxFormMixin, ModelForm):
         widgets = {
             "info": Textarea({"rows": "3"}),
         }
+
+
+class BookkeepingEditOrderForm(DocboxFormMixin, ModelForm):
+    class Meta:
+        model = Price
+        fields = ["provider"]
+        labels = {
+            "provider": "0",
+        }
+        widgets = {
+            "provider": TextInput({"class": "text-right"}),
+        }

@@ -156,15 +156,29 @@ class Price(models.Model):
     )
 
     @property
+    def products(self):
+        products = self.total
+        if self.mounting:
+            products = products - self.mounting
+
+        if self.delivery:
+            products = products = self.delivery
+
+        if self.added:
+            products = products = self.added
+
+        return products
+
+    @property
     def profit(self):
         if self.provider:
-            return self.total - self.provider
+            return self.products - self.provider
         return 0
 
     @property
     def extra_charge(self):
         if self.profit:
-            return self.profit / self.provider
+            return f"{int(self.profit / self.provider * 100)}%"
         return 0
 
     class Meta:
@@ -172,12 +186,7 @@ class Price(models.Model):
         verbose_name_plural = "цены"
 
     def __str__(self):
-        price = self.total
-        if self.mounting:
-            price += self.mounting
-        if self.added:
-            price += self.added
-        return f"{self.order.client} - {str(price)} грн."
+        return f"{str(self.total)} грн."
 
 
 class Transaction(models.Model):

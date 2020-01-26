@@ -16,7 +16,13 @@ from django.views.generic import (
     View,
 )
 
-from docbox.forms import EditClientForm, EditOrderForm, NewOrderForm, NewTransactionForm
+from docbox.forms import (
+    BookkeepingEditOrderForm,
+    EditClientForm,
+    EditOrderForm,
+    NewOrderForm,
+    NewTransactionForm,
+)
 from docbox.models import Client, Order, Transaction
 
 
@@ -334,6 +340,38 @@ class BookkeepingOrders(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         queryset = queryset.filter(date_created__range=(start_date, end_date))
         return queryset
+
+
+class BookkeepingEditOrder(LoginRequiredMixin, DocboxFormViewBase):
+    template_name = "docbox/bookkeeping-edit-order.html"
+    success_url = reverse_lazy("docbox:bookkeeping-orders")
+    form_class = BookkeepingEditOrderForm
+
+    def get(self, request, *args, **kwargs):
+        order_pk = request.resolver_match.kwargs["pk"]
+        self.order = Order.objects.get(order_id=order_pk)
+
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        order_pk = request.resolver_match.kwargs["pk"]
+        self.order = Order.objects.get(order_id=order_pk)
+
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"instance": self.order.price})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["order"] = self.order
+        return context
 
 
 class CsvExport(LoginRequiredMixin, View):

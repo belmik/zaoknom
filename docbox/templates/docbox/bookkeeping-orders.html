@@ -43,7 +43,7 @@
       <th data-field="provider_code" scope="col" class="border-top-0" data-width="200">Номер заказа</th>
       <th data-field="client" scope="col" class="border-top-0">Клиент</th>
       <th data-field="status" scope="col" class="border-top-0">Статус</th>
-      <th data-field="price" scope="col" class="border-top-0">Сумма</th>
+      <th data-field="price" scope="col" class="border-top-0">Цена изделий</th>
       <th data-field="provider_price" scope="col" class="border-top-0">Поставщик</th>
       <th data-field="profit" scope="col" class="border-top-0">Прибыль</th>
       <th data-field="extra_charge" scope="col" class="border-top-0">Наценка</th>
@@ -53,15 +53,22 @@
 {% for order in object_list %}
     <tr>
       <td>{{ order.date_created|date:'d.m.y'}}</td>
-      <td>{{ order.provider_code}}</td>
+      <td>
+        <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
+          {{ order.provider_code}}
+        </a>
+      </td>
       <td>
         <a class="text-reset" href="{% url 'docbox:client-detail' order.client.pk %}">
           {{ order.client.name }}
         </a>
       </td>
       <td>{{ order.get_status_display }}</td>
-      <td class="text-right text-nowrap">{{ order.price.total|price }}</td>
-      <td class="text-right text-nowrap">{{ order.price.provider|price }}</td>
+      <td class="text-right text-nowrap">{{ order.price.products|price }}</td>
+      <td class="text-right text-nowrap">
+        <a class="text-reset" href="{% url 'docbox:bookkeeping-order-edit' order.pk %}">
+          {{ order.price.provider|price }}</td>
+        </a>
       <td class="text-right text-nowrap">{{ order.price.profit|price }}</td>
       <td class="text-right text-nowrap">{{ order.price.extra_charge }}</td>
     </tr>

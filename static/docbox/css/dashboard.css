@@ -28,3 +28,11 @@ body {
   font-size: .75rem;
   text-transform: uppercase;
 }
+
+#bookkeeping_edit_order_form .input-group-prepend .input-group-text{
+  width: 100px;
+}
+
+#bookkeeping_edit_order_form .input-group-append .input-group-text{
+  width: 50px;
+}

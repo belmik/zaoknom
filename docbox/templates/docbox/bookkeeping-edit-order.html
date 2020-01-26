@@ -1,0 +1,70 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_price %}
+
+
+{% block page_header %}
+Редактирование заказа
+{% endblock page_header %}
+
+
+{% block content %}
+<div class="container" style="max-width: 350px;">
+<form method="post" id="bookkeeping_edit_order_form">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            <div class="input-group-prepend" style="height: 38px;">
+                <span class="input-group-text">Изделия</span>
+            </div>
+            <input class="form-control text-right"  id="products" type="text" placeholder="{{order.price.products}}" disabled>
+            <div class="input-group-append" style="height: 38px;">
+                <span class="input-group-text">грн.</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            {% include "docbox/form/field.html" with field=form.provider prepend="Завод:" append="грн." %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            <div class="input-group-prepend" style="height: 38px;">
+                <span class="input-group-text">Разница</span>
+            </div>
+            <input class="form-control text-right"  id="profit" type="text" placeholder="{{ order.price.profit }}" disabled>
+            <div class="input-group-append" style="height: 38px;">
+                <span class="input-group-text">грн.</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            <div class="input-group-prepend" style="height: 38px;">
+                <span class="input-group-text">Наценка</span>
+            </div>
+            <input class="form-control text-right"  id="extra_charge" type="text" placeholder="{{ order.price.extra_charge }}" disabled>
+            <div class="input-group-append" style="height: 38px;">
+                <span class="input-group-text">%</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Обновить">
+    </div>
+
+</form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+$("#id_provider").change(function(){
+    var products = {{ order.price.products }};
+    var provider = $(this).val();
+    var profit = products - provider;
+    $("#profit").val(profit);
+    $("#extra_charge").val(Math.round(profit / products * 100));
+  });
+</script>
+{% endblock scripts %}
