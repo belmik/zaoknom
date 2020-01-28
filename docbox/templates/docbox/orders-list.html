@@ -1,5 +1,6 @@
 {% extends 'docbox/base.html' %}
 {% load docbox_price %}
+{% load docbox_phone %}
 
 
 {% block page_header %}
@@ -63,7 +64,7 @@
           {{ order.client.name }}
         </a>
       </td>
-      <td>{{ order.client.phone }}</td>
+      <td>{{ order.client.phone|phone }}</td>
       <td>
         <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
             <span class="fas fa-eye fa-fw"></span>

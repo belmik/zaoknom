@@ -1,9 +1,10 @@
 {% extends 'docbox/base.html' %}
 
 {% load docbox_price %}
+{% load docbox_phone %}
 
 {% block page_header %}
-{{ object.name }} {% if object.phone %}[{{ object.phone }}]{% endif %}
+{{ object.name }} {% if object.phone %} {{ object.phone|phone }}{% endif %}
 <a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">
   <span class="fas fa-pen fa-fw"></span>
 </a>

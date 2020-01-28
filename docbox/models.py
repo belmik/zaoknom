@@ -19,7 +19,7 @@ class Client(models.Model):
     def __str__(self):
         phone = ""
         if self.phone:
-            phone = f" [{self.phone}]"
+            phone = f" ({self.phone[:3]}) {self.phone[3:6]} {self.phone[6:]}"
         return self.name + phone
 
     @property

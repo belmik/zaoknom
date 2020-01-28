@@ -1,4 +1,6 @@
 {% extends 'docbox/base.html' %}
+{% load docbox_phone %}
+
 
 {% block page_header %}
 Клиенты
@@ -19,7 +21,7 @@
         <td>
             <a href="{% url 'docbox:client-detail' client.client_id %}" class="text-reset">{{ client.name }}</a>
         </td>
-      <td>{{ client.phone }}</td>
+      <td>{{ client.phone|phone }}</td>
     </tr>
 {% endfor %}
 </tbody>

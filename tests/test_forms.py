@@ -36,7 +36,7 @@ class NewOrderFormTestCase(BaseTestCase):
     def test_clien_phone_save(self):
         self.client.post(self.form_url, data=self.valid_data)
         r = self.client.get(reverse("docbox:orders-list"))
-        self.assertContains(r, self.valid_data["phone"])
+        self.assertContains(r, "(097) 000 0000")
 
     def test_town_save(self):
         self.client.post(self.form_url, data=self.valid_data)
