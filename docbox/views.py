@@ -345,6 +345,11 @@ class BookkeepingOrders(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["start_date"] = self.start_date
         context["end_date"] = self.end_date
+
+        context["total_profit"] = 0
+        for order in self.object_list:
+            context["total_profit"] += order.price.profit
+
         return context
 
     def get_queryset(self):
