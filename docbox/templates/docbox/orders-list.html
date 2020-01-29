@@ -105,6 +105,7 @@
 </tbody>
 </table>
 
+{% if paginator.num_pages != 1 %}
 <nav class="mt-3">
   <ul class="pagination justify-content-center">
 
@@ -125,7 +126,8 @@
 
   </ul>
 </nav>
-    
+{% endif %}
+
 {% endblock content %}
 
 {% block scripts %}
