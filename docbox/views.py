@@ -329,6 +329,18 @@ class BookkeepingOrders(LoginRequiredMixin, ListView):
         self.end_date = request.session.get("end_date", def_end_date)
         return super().get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+
+        start_date = datetime.strptime(start_date, self.date_format)
+        end_date = datetime.strptime(end_date, self.date_format)
+
+        request.session["start_date"] = start_date.strftime(self.date_format)
+        request.session["end_date"] = end_date.strftime(self.date_format)
+
+        return self.get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["start_date"] = self.start_date
