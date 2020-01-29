@@ -301,5 +301,5 @@ class BookkeepingEditOrderForm(DocboxFormMixin, ModelForm):
             "provider": "0",
         }
         widgets = {
-            "provider": TextInput({"class": "text-right"}),
+            "provider": TextInput({"class": "text-right", "autofocus": True}),
         }
