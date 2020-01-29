@@ -16,7 +16,7 @@
     <dd class="col-sm-4">{{ object.remaining|price }}</dd>
 </dl>
 <div class="row">
-<div class="col-xl-7">
+<div class="col-xl-6">
   <h5 class="mt-5">Последние заказы:</h5>
     <table class="table table-striped table-borderless">
         <thead>
@@ -26,31 +26,26 @@
                 <th scope="col">Статус</th>
                 <th scope="col">Сумма</th>
                 <th scope="col">Остаток</th>
-                <th scope="col">Инструменты</th>
             </tr>
         </thead>
         <tbody>
         {% for order in object.last_orders %}
         <tr>
             <td>{{ order.date_created|date:'d.m.y' }}</td>
-            <td>{{ order.provider_code }}</td>
+            <td>
+                <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
+                    {{ order.provider_code }}
+                </a>
+            </td>
             <td>{{ order.get_status_display }}</td>
             <td class="text-right text-nowrap">{{ order.price.total|price }}</td>
             <td class="text-right text-nowrap">{{ order.remaining|price }}</td>
-            <td>
-            <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
-                <span class="fas fa-eye fa-fw"></span>
-            </a>
-            <a class="text-reset" href="{% url 'docbox:order-edit' order.pk %}">
-                <span class="fas fa-pen fa-fw"></span>
-            </a>
-            </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 </div>
-<div class="col-xl-5">
+<div class="col-xl-6">
   {% include "docbox/transactions_form.html" with formset=formset %}
 </div>
 </div>
