@@ -9,6 +9,11 @@ docbox_patterns = (
         path("logout", LogoutView.as_view(), name="logout"),
         path("clients", views.ClientsList.as_view(), name="clients-list"),
         path("client/<uuid:pk>", views.ClientDetail.as_view(), name="client-detail"),
+        path(
+            "client/<uuid:pk>/orders",
+            views.CleintOrdersList.as_view(),
+            name="client-orders-list",
+        ),
         path("client/<uuid:pk>/edit", views.EditClient.as_view(), name="client-edit"),
         path("orders", views.OrdersList.as_view(), name="orders-list"),
         path("orders/export", views.CsvExport.as_view(), name="export-csv"),

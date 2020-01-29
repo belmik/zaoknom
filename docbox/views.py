@@ -142,6 +142,21 @@ class OrdersList(LoginRequiredMixin, ListView):
         return queryset
 
 
+class CleintOrdersList(OrdersList):
+    def get(self, request, *args, **kwargs):
+        self.client_pk = self.kwargs.get("pk")
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        start_date = datetime.strptime(self.start_date, self.date_format)
+        end_date = datetime.strptime(self.end_date, self.date_format)
+
+        queryset = super().get_queryset()
+        queryset = queryset.filter(date_created__range=(start_date, end_date))
+        queryset = queryset.filter(client=self.client_pk)
+        return queryset
+
+
 class OrderDetail(LoginRequiredMixin, DetailView):
     template_name = "docbox/order-detail.html"
     model = Order

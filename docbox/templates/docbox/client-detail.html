@@ -44,6 +44,9 @@
         {% endfor %}
         </tbody>
     </table>
+    <h5 class="mb-5">
+        <a class="text-reset" href="{% url 'docbox:client-orders-list' object.pk %}">все заказы</a>
+    </h5>
 </div>
 <div class="col-xl-6">
   {% include "docbox/transactions_form.html" with formset=formset %}
