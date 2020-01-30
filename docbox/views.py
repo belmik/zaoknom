@@ -104,33 +104,43 @@ class OrdersList(LoginRequiredMixin, ListView):
     paginate_by = 50
 
     date_format = formats.get_format_lazy("DATE_INPUT_FORMATS")[0]
+    status_choices = Order.STATUS_CHOICES
+    status_choices.append(("all", "все"))
 
     def post(self, request, *args, **kwargs):
         start_date = request.POST.get("start_date")
         end_date = request.POST.get("end_date")
+        status = request.POST.get("status", "all")
 
         start_date = datetime.strptime(start_date, self.date_format)
         end_date = datetime.strptime(end_date, self.date_format)
 
         request.session["start_date"] = start_date.strftime(self.date_format)
         request.session["end_date"] = end_date.strftime(self.date_format)
+        request.session["status"] = status
 
         return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         today = date.today()
         quarter = timedelta(weeks=13)
-        def_strat_date = (today - quarter).replace(day=1)
-        def_strat_date = def_strat_date.strftime(self.date_format)
+        def_start_date = (today - quarter).replace(day=1)
+        def_start_date = def_start_date.strftime(self.date_format)
         def_end_date = date(today.year + 1, 1, 1).strftime(self.date_format)
-        self.start_date = request.session.get("start_date", def_strat_date)
+
+        self.start_date = request.session.get("start_date", def_start_date)
         self.end_date = request.session.get("end_date", def_end_date)
+        self.status = request.session.get("status", "all")
+        self.client_pk = self.kwargs.get("client_pk")
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["start_date"] = self.start_date
         context["end_date"] = self.end_date
+        context["selected_status"] = self.status
+        context["status_choices"] = self.status_choices
         return context
 
     def get_queryset(self):
@@ -139,21 +149,13 @@ class OrdersList(LoginRequiredMixin, ListView):
 
         queryset = super().get_queryset()
         queryset = queryset.filter(date_created__range=(start_date, end_date))
-        return queryset
 
+        if self.client_pk:
+            queryset = queryset.filter(client=self.client_pk)
 
-class CleintOrdersList(OrdersList):
-    def get(self, request, *args, **kwargs):
-        self.client_pk = self.kwargs.get("pk")
-        return super().get(request, *args, **kwargs)
+        if self.status != "all":
+            queryset = queryset.filter(status=self.status)
 
-    def get_queryset(self):
-        start_date = datetime.strptime(self.start_date, self.date_format)
-        end_date = datetime.strptime(self.end_date, self.date_format)
-
-        queryset = super().get_queryset()
-        queryset = queryset.filter(date_created__range=(start_date, end_date))
-        queryset = queryset.filter(client=self.client_pk)
         return queryset
 
 
