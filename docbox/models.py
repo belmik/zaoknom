@@ -35,6 +35,10 @@ class Client(models.Model):
         return self.orders[:15]
 
     @property
+    def last_transactions(self):
+        return self.transactions.order_by("-date")[:15]
+
+    @property
     def transactions_sum(self):
         if self.transactions:
             return self.transactions.aggregate(models.Sum("amount"))["amount__sum"]

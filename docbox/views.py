@@ -73,21 +73,6 @@ class ClientDetail(LoginRequiredMixin, DetailView):
     template_name = "docbox/client-detail.html"
     model = Client
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        TransactionsFormSet = modelformset_factory(Transaction, form=NewTransactionForm)
-        formset = TransactionsFormSet(
-            queryset=self.object.transactions.order_by("-date")[:5],
-            initial=[{"client": self.object.pk}],
-        )
-
-        # It's not possible to rearange only initial forms in queryset, so I did this.
-        forms = list(reversed(formset.forms[:-1]))
-        forms.append(formset.forms[-1])
-        formset.forms = forms
-        context["formset"] = formset
-        return context
-
 
 class EditClient(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
     template_name = "docbox/edit-client.html"

@@ -16,7 +16,7 @@
     <dd class="col-sm-4">{{ object.remaining|price }}</dd>
 </dl>
 <div class="row">
-<div class="col-xl-6">
+<div class="col-xl-7">
   <h5 class="mt-5">Последние заказы:</h5>
     <table class="table table-striped table-borderless">
         <thead>
@@ -24,8 +24,8 @@
                 <th scope="col">Дата</th>
                 <th scope="col">Номер заказа</th>
                 <th scope="col">Статус</th>
-                <th scope="col">Сумма</th>
-                <th scope="col">Остаток</th>
+                <th class="text-right" scope="col">Сумма</th>
+                <th class="text-right" scope="col">Остаток</th>
             </tr>
         </thead>
         <tbody>
@@ -48,8 +48,26 @@
         <a class="text-reset" href="{% url 'docbox:client-orders-list' object.pk %}">все заказы</a>
     </h5>
 </div>
-<div class="col-xl-6">
-  {% include "docbox/transactions_form.html" with formset=formset %}
+<div class="col-xl-5">
+    <h5 class="mt-5">Последние платежи:</h5>
+    <table class="table table-striped table-borderless">
+        <thead>
+            <tr>
+                <th scope="col" style="width: 100px;">Дата</th>
+                <th scope="col" class="text-right" style="width: 150px;">Сумма</th>
+                <th scope="col">Комментарий</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transaction in object.last_transactions %}
+        <tr>
+            <td>{{ transaction.date|date:'d.m.y' }}</td>
+            <td class="text-right text-nowrap">{{ transaction.amount|price }}</td>
+            <td>{{ transaction.comment }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 </div>
 {% endblock content %}
