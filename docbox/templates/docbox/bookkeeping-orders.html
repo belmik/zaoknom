@@ -10,21 +10,39 @@
 <div id="toolbar">
   <form method="post">
   {% csrf_token %}
-    <div class="form-row">
-      <div class="input-daterange input-group input-group-sm col-sm-5">
-        <div class="input-group-prepend">
-          <span class="input-group-text">Период с:</span>
+    <div class="form-row align-items-center">
+      <div class="col-auto">
+        <div class="input-daterange input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Период с:</span>
+          </div>
+            <input type="text" value="{{ start_date }}" class="input-sm form-control" name="start_date" />
         </div>
-          <input type="text" value="{{ start_date }}" class="input-sm form-control" name="start_date" />
       </div>
-      <div class="input-daterange input-group input-group-sm col-sm-4">
-        <div class="input-group-prepend">
-          <span class="input-group-text">по:</span>
+      <div class="col-auto">
+        <div class="input-daterange input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text">по:</span>
+          </div>
+            <input type="text" value="{{ end_date }}" class="input-sm form-control" name="end_date" />
         </div>
-          <input type="text" value="{{ end_date }}" class="input-sm form-control" name="end_date" />
       </div>
-      <div class="form-group form-group-sm col-sm-3 mb-0">
-        <input type="submit" class="form-control btn btn-sm btn-outline-secondary form-control-sm" value="Применить" />
+      <div class="col-auto">
+        <div class="form-group form-group-sm mb-0">
+          <input type="submit" class="form-control btn btn-sm btn-outline-secondary form-control-sm" value="Применить" />
+        </div>
+      </div>
+      <div class="col-auto ml-auto">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Статус</span>
+          </div>
+          <select id="status" name="status" class="custom-select custom-select-sm form-control">
+            {% for status in status_choices %}
+              <option value="{{ status.0 }}" {% if status.0 == selected_status %}selected{% endif %}>{{ status.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
       </div>
     </div>
   </form>
@@ -35,11 +53,8 @@
 </div>
 <table class="table table-hover" 
   data-toggle="table"
-  data-toolbar="#toolbar"
   data-classes="table table-hover table-sm table-bordered"
   data-locale="ru-RU"
-  data-search-align="left"
-  data-show-fullscreen="true"
   >
   <thead>
     <tr>
@@ -114,6 +129,10 @@
     daysOfWeekHighlighted: "0,6",
     todayHighlight: true,
     toggleActive: true
+  });
+
+  $("#status").change(function(){
+    $("#toolbar form").submit();
   });
 </script>
 {% endblock scripts %}
