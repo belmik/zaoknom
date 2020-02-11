@@ -91,6 +91,7 @@ class OrdersList(LoginRequiredMixin, ListView):
     date_format = formats.get_format_lazy("DATE_INPUT_FORMATS")[0]
     status_choices = Order.STATUS_CHOICES
     status_choices.append(("all", "все"))
+    status_choices.append(("not_finished", "не завершен"))
 
     def post(self, request, *args, **kwargs):
         start_date = request.POST.get("start_date")
@@ -137,6 +138,9 @@ class OrdersList(LoginRequiredMixin, ListView):
 
         if self.client_pk:
             queryset = queryset.filter(client=self.client_pk)
+
+        if self.status == "not_finished":
+            return queryset.exclude(status="finished")
 
         if self.status != "all":
             queryset = queryset.filter(status=self.status)
