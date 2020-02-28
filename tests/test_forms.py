@@ -134,17 +134,11 @@ class NewTransactionFormCase(BaseTestCase):
     def test_new_transaction_save(self):
         amount = 2000
         data = {
-            "form-TOTAL_FORMS": "1",
-            "form-INITIAL_FORMS": "0",
-            "form-MIN_NUM_FORMS": "0",
-            "form-MAX_NUM_FORMS": "1000",
-            "next": self.order.get_absolute_url(),
-            "form-0-transaction_id": "",
-            "form-0-order": self.order.pk,
-            "form-0-client": self.order.client.pk,
-            "form-0-date": date.today(),
-            "form-0-amount": amount,
-            "form-0-comment": "тестовая транзакция",
+            "amount": amount,
+            "date": date.today(),
+            "client": self.order.client.pk,
+            "comment": "тестовая транзакция",
+            "order": self.order.pk,
         }
         url = reverse("docbox:new-transaction")
         self.client.post(url, data=data, follow=True)

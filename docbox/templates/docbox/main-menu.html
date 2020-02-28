@@ -6,7 +6,7 @@
                 <span class="mr-2 fas fa-fw {{ item.fa_icon_name }}"></span>{{ item.name }}
             </a>
             {% if item.add_url %}
-            <a class="col-3" href="{{ item.add_url }}">
+            <a class="col-3{{ item.active_add_url_link_cls }}" href="{{ item.add_url }}">
                 <span class="fas fa-plus fa-fw"></span>
             </a>
             {% endif %}

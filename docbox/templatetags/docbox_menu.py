@@ -8,10 +8,19 @@ register = template.Library()
 
 @register.inclusion_tag("docbox/main-menu.html", takes_context=True)
 def main_menu(context):
-    MenuItem = namedtuple("MenuItem", "name, url, fa_icon_name, add_url, active_link_cls")
+    MenuItem = namedtuple(
+        "MenuItem",
+        "name, url, fa_icon_name, add_url, active_link_cls, active_add_url_link_cls",
+    )
     menu = [
         ("Заказы", "docbox:orders-list", "fa-copy", "docbox:new-order"),
         ("Клиенты", "docbox:clients-list", "fa-users", ""),
+        (
+            "Транзакции",
+            "docbox:transactions-list",
+            "fa-exchange-alt",
+            "docbox:new-transaction",
+        ),
         ("Бухгалтерия", "docbox:bookkeeping-orders", "fa-book", ""),
     ]
 
@@ -32,9 +41,18 @@ def main_menu(context):
             add_url = reverse(add_url_name)
 
         active_link_cls = ""
-        if url_name == current_url_name:
+        active_add_url_link_cls = ""
+
+        if current_url_name == url_name:
             active_link_cls = active_class_name
 
-        menu_list.append(MenuItem(name, url, fa_icon_name, add_url, active_link_cls))
+        if current_url_name == add_url_name:
+            active_add_url_link_cls = active_class_name
+
+        menu_list.append(
+            MenuItem(
+                name, url, fa_icon_name, add_url, active_link_cls, active_add_url_link_cls
+            )
+        )
 
     return {"menu": menu_list}

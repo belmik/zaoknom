@@ -2,7 +2,7 @@ import csv
 from datetime import date, datetime, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import modelformset_factory
+from django.db import models
 from django.http import HttpResponse
 from django.urls import resolve, reverse, reverse_lazy
 from django.utils import formats
@@ -47,6 +47,43 @@ class DocboxFormViewBase(FormView):
             attrs.update({"class": field_class.strip()})
 
 
+class DocboxListViewBase(ListView):
+    paginate_by = 50
+
+    date_format = formats.get_format_lazy("DATE_INPUT_FORMATS")[0]
+
+    def post(self, request, *args, **kwargs):
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+
+        start_date = datetime.strptime(start_date, self.date_format)
+        end_date = datetime.strptime(end_date, self.date_format)
+
+        request.session["start_date"] = start_date.strftime(self.date_format)
+        request.session["end_date"] = end_date.strftime(self.date_format)
+
+    def get(self, request, *args, **kwargs):
+        today = date.today()
+        quarter = timedelta(weeks=13)
+        def_start_date = (today - quarter).replace(day=1)
+        def_start_date = def_start_date.strftime(self.date_format)
+        def_end_date = date(today.year + 1, 1, 1).strftime(self.date_format)
+
+        start_date = request.session.get("start_date", def_start_date)
+        end_date = request.session.get("end_date", def_end_date)
+
+        self.start_date = datetime.strptime(start_date, self.date_format)
+        self.end_date = datetime.strptime(end_date, self.date_format)
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["start_date"] = self.start_date.strftime(self.date_format)
+        context["end_date"] = self.end_date.strftime(self.date_format)
+        return context
+
+
 class ZaoknomView(TemplateView):
     template_name = "zaoknom/index.html"
 
@@ -83,39 +120,23 @@ class EditClient(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
         return reverse("docbox:client-detail", args=[self.object.pk])
 
 
-class OrdersList(LoginRequiredMixin, ListView):
+class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     template_name = "docbox/orders-list.html"
     model = Order
-    paginate_by = 50
 
-    date_format = formats.get_format_lazy("DATE_INPUT_FORMATS")[0]
-    status_choices = Order.STATUS_CHOICES
+    status_choices = Order.STATUS_CHOICES.copy()
     status_choices.append(("all", "все"))
     status_choices.append(("not_finished", "не завершен"))
 
     def post(self, request, *args, **kwargs):
-        start_date = request.POST.get("start_date")
-        end_date = request.POST.get("end_date")
+        super().post(request, *args, **kwargs)
+
         status = request.POST.get("status", "all")
-
-        start_date = datetime.strptime(start_date, self.date_format)
-        end_date = datetime.strptime(end_date, self.date_format)
-
-        request.session["start_date"] = start_date.strftime(self.date_format)
-        request.session["end_date"] = end_date.strftime(self.date_format)
         request.session["status"] = status
 
         return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        today = date.today()
-        quarter = timedelta(weeks=13)
-        def_start_date = (today - quarter).replace(day=1)
-        def_start_date = def_start_date.strftime(self.date_format)
-        def_end_date = date(today.year + 1, 1, 1).strftime(self.date_format)
-
-        self.start_date = request.session.get("start_date", def_start_date)
-        self.end_date = request.session.get("end_date", def_end_date)
         self.status = request.session.get("status", "all")
         self.client_pk = self.kwargs.get("client_pk")
 
@@ -123,18 +144,14 @@ class OrdersList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["start_date"] = self.start_date
-        context["end_date"] = self.end_date
         context["selected_status"] = self.status
         context["status_choices"] = self.status_choices
         return context
 
     def get_queryset(self):
-        start_date = datetime.strptime(self.start_date, self.date_format)
-        end_date = datetime.strptime(self.end_date, self.date_format)
 
         queryset = super().get_queryset()
-        queryset = queryset.filter(date_created__range=(start_date, end_date))
+        queryset = queryset.filter(date_created__range=(self.start_date, self.end_date))
 
         if self.client_pk:
             queryset = queryset.filter(client=self.client_pk)
@@ -154,18 +171,35 @@ class OrderDetail(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        TransactionsFormSet = modelformset_factory(Transaction, form=NewTransactionForm)
-        formset = TransactionsFormSet(
-            queryset=self.object.transactions,
-            initial=[{"order": self.object.pk, "client": self.object.client.pk}],
-        )
-        context["formset"] = formset
         return context
+
+
+class TransactionList(LoginRequiredMixin, DocboxListViewBase):
+    template_name = "docbox/transactions_list.html"
+    model = Transaction
+
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        cashbox_sum = Transaction.objects.filter(cashbox=True).aggregate(models.Sum("amount"))
+        context["cashbox_sum"] = cashbox_sum.get("amount__sum", 0)
+
+        return context
+
+    def get_queryset(self):
+
+        queryset = super().get_queryset()
+        queryset = queryset.filter(date__range=(self.start_date, self.end_date))
+        return queryset
 
 
 class NewTransaction(LoginRequiredMixin, FormView):
     template_name = "docbox/new-transaction.html"
-    form_class = modelformset_factory(Transaction, form=NewTransactionForm)
+    form_class = NewTransactionForm
     success_url = reverse_lazy("docbox:orders-list")
 
     def __init__(self, *args, **kwargs):
@@ -189,16 +223,15 @@ class NewTransaction(LoginRequiredMixin, FormView):
     def get_success_url(self):
         return self.next or str(self.success_url)
 
-    def form_valid(self, formset):
-        formset.save()
-        return super().form_valid(formset)
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if self.object:
-            kwargs.update({"queryset": self.object.transactions})
-
-        return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["orders_list"] = Order.objects.all().exclude(status="finished")
+        context["clients_list"] = Client.objects.all()
+        return context
 
     def get_initial(self):
         if isinstance(self.object, Order):

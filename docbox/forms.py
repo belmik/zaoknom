@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import (
     CharField,
+    CheckboxInput,
     ChoiceField,
     DateField,
     DecimalField,
@@ -275,12 +276,15 @@ class EditOrderForm(NewOrderForm):
 class NewTransactionForm(DocboxFormMixin, ModelForm):
     class Meta:
         model = Transaction
-        fields = ["amount", "date", "comment", "order", "client"]
+        fields = ["amount", "date", "comment", "order", "client", "cashbox"]
         widgets = {
-            "amount": TextInput({"class": "text-right"}),
-            "comment": TextInput({"noplaceholder": "on"}),
+            "amount": TextInput(
+                {"class": "text-right", "noplaceholder": "on", "autofocus": True}
+            ),
+            "comment": Textarea({"rows": "3"}),
             "order": HiddenInput(),
             "client": HiddenInput(),
+            "cashbox": CheckboxInput({"class": "custom-control-input", "checked": True}),
         }
 
 
