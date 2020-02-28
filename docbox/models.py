@@ -207,13 +207,15 @@ class Transaction(models.Model):
     order = models.ForeignKey(
         "Order", verbose_name="Заказ", on_delete=models.PROTECT, blank=True, null=True
     )
+    cashbox = models.BooleanField(verbose_name="Касса", null=True, default=True)
+
+    def __str__(self):
+        return f"{self.amount} грн."
 
     class Meta:
         verbose_name = "Транзация"
         verbose_name_plural = "Транзакции"
-
-    def __str__(self):
-        return f"{self.amount} грн."
+        ordering = ["-date"]
 
 
 class Order(models.Model):
