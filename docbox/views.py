@@ -261,19 +261,8 @@ class DeleteTransaction(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["info_fields"] = [
-            self.get_field(self.object.client, "name"),
-            self.get_field(self.object, "date"),
-            self.get_field(self.object, "amount"),
-            self.get_field(self.object, "order"),
-        ]
         context["next"] = self.next
         return context
-
-    def get_field(self, obj, field_name):
-        value = getattr(obj, field_name)
-        verbose_name = obj._meta.get_field(field_name).verbose_name
-        return (verbose_name, value)
 
 
 class NewOrder(LoginRequiredMixin, DocboxFormViewBase):

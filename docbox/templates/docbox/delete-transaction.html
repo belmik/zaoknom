@@ -1,5 +1,5 @@
 {% extends 'docbox/base.html' %}
-
+{% load docbox_price %}
 
 {% block page_header %}
 Удаление транзакции
@@ -7,16 +7,49 @@
 
 {% block content %}
 <div class="container" style="max-width: 768px;">
-{% for label, value in info_fields %}
     <div class="row">
-        <div class="col-3">
-            <p>{{ label }}:</p>
-        </div>
+        <div class="col-3"><p>Дата:</p></div>
+        <div class="col-9"><p class="font-weight-bold">{{ object.date }}</p></div>
+    </div>
+    <div class="row">
+        <div class="col-3"><p>Сумма:</p></div>
+        <div class="col-9"><p class="font-weight-bold">{{ object.amount|price }}</p></div>
+    </div>
+    {% if object.client %}
+    <div class="row">
+        <div class="col-3"><p>Клиент:</p></div>
         <div class="col-9">
-            <p class="font-weight-bold">{{ value }}</p>
+            <p class="font-weight-bold">
+                <a class="text-reset" href="{% url 'docbox:client-detail' object.client.pk %}">
+                {{ object.client.name}}</a>
+            </p>
         </div>
     </div>
-{% endfor %}
+    {% endif %}
+    {% if object.provider %}
+    <div class="row">
+        <div class="col-3"><p>Поставщик:</p></div>
+        <div class="col-9"><p class="font-weight-bold">{{ object.provider.name}}</p></div>
+    </div>
+    {% endif %}
+    {% if object.order %}
+    <div class="row">
+        <div class="col-3"><p>Заказ:</p></div>
+        <div class="col-9">
+            <p class="font-weight-bold">
+                <a class="text-reset" href="{% url 'docbox:order-detail' object.order.pk %}">
+                {{ object.order.provider_code}}
+                </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
+    {% if object.comment %}
+    <div class="row">
+        <div class="col-3"><p>Комментарий:</p></div>
+        <div class="col-9"><p class="font-weight-bold">{{ object.comment}}</p></div>
+    </div>
+    {% endif %}
     <form method="post">
     {% csrf_token %}
     {% if next %}

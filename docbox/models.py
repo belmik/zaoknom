@@ -255,7 +255,7 @@ class Order(models.Model):
         null=True,
     )
     provider_code = models.CharField(
-        verbose_name="Производственный номер", max_length=1024, blank=True, default=""
+        verbose_name="Производственный номер", max_length=1024, blank=True, default="б/н"
     )
     status = models.SlugField(
         verbose_name="Статус", choices=STATUS_CHOICES, default="new", blank=True
