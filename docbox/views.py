@@ -169,10 +169,6 @@ class OrderDetail(LoginRequiredMixin, DetailView):
     template_name = "docbox/order-detail.html"
     model = Order
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
 
 class TransactionList(LoginRequiredMixin, DocboxListViewBase):
     template_name = "docbox/transactions_list.html"
