@@ -128,16 +128,22 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     status_choices.append(("all", "все"))
     status_choices.append(("not_finished", "не завершен"))
 
+    type_choices = Order.ORDER_TYPE_CHOICES.copy()
+    type_choices.append(("all", "все"))
+
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
 
         status = request.POST.get("status", "all")
+        order_type = request.POST.get("type", "all")
         request.session["status"] = status
+        request.session["type"] = order_type
 
         return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         self.status = request.session.get("status", "all")
+        self.order_type = request.session.get("type", "all")
         self.client_pk = self.kwargs.get("client_pk")
 
         return super().get(request, *args, **kwargs)
@@ -145,7 +151,9 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["selected_status"] = self.status
+        context["selected_type"] = self.order_type
         context["status_choices"] = self.status_choices
+        context["type_choices"] = self.type_choices
         return context
 
     def get_queryset(self):
@@ -161,6 +169,9 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
 
         if self.status != "all":
             queryset = queryset.filter(status=self.status)
+
+        if self.order_type != "all":
+            queryset = queryset.filter(category=self.order_type)
 
         return queryset
 
