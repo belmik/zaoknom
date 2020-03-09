@@ -68,7 +68,13 @@
         {% endif %}
       </td>
       <td>{{ transaction.provider.name }}</td>
-      <td>{{ transaction.order.provider_code }}</td>
+      <td>
+        {% if transaction.order %}
+        <a class="text-reset" href="{% url 'docbox:order-detail' transaction.order.pk %}">
+          {{ transaction.order.provider_code }}
+        </a>
+        {% endif %}
+      </td>
       <td>{{ transaction.comment }}</td>
       <td class="text-center">
       {% if transaction.cashbox %}
