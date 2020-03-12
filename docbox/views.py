@@ -164,14 +164,14 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
         if self.client_pk:
             queryset = queryset.filter(client=self.client_pk)
 
+        if self.order_type != "all":
+            queryset = queryset.filter(category=self.order_type)
+
         if self.status == "not_finished":
             return queryset.exclude(status="finished")
 
         if self.status != "all":
             queryset = queryset.filter(status=self.status)
-
-        if self.order_type != "all":
-            queryset = queryset.filter(category=self.order_type)
 
         return queryset
 
