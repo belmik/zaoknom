@@ -118,7 +118,8 @@
               <dt class="col-sm-2">Текущий остаток:</dt>
               <dd class="col-sm-10">{{ order.remaining|price }}</dd>
           {% else %}
-            <dt class="col-sm-2">Заказ оплачен</dt>
+            <dt class="col-sm-2">Заказ оплачен:</dt>
+            <dd class="col-sm-10">{{ order.transactions.last.date }}</dd>
           {% endif %}
           {% if order.comment %}
               <dt class="col-sm-2">Комментарий:</dt>
