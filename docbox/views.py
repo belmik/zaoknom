@@ -250,6 +250,21 @@ class NewTransaction(LoginRequiredMixin, FormView):
         return super().get_initial()
 
 
+class EditTransaction(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
+    template_name = "docbox/edit-transaction.html"
+    form_class = NewTransactionForm
+    model = Transaction
+
+    def get_success_url(self):
+        return reverse("docbox:transactions-list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["orders_list"] = Order.objects.all().exclude(status="finished")
+        context["clients_list"] = Client.objects.all()
+        return context
+
+
 class DeleteTransaction(LoginRequiredMixin, DeleteView):
     model = Transaction
     template_name = "docbox/delete-transaction.html"

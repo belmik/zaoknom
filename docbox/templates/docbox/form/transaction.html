@@ -1,0 +1,52 @@
+<div class="container" style="max-width: 350px;">
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'docbox:transactions-list' %}">
+    <div class="form-row">
+        <div class="form-group col mb-3">
+            <div class="custom-control custom-switch">
+            {% include "docbox/form/field.html" with field=form.cashbox  %}
+            <label class="custom-control-label" for="id_cashbox">Касса</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            {% include "docbox/form/field.html" with field=form.amount prepend="Сумма:" append="грн." %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="typeahead__container form-group col">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.client %}
+                <input
+                {% if object.client %}value="{{ object.client.name }}"{% endif %}
+                type="text" name="client_select" class="clients-typeahead form-control" autocomplete="off" placeholder="Клиент" id="id_client_select">
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="typeahead__container form-group col">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.order %}
+                <input
+                {% if object.order %}value="{{ object.order.provider_code }} (остаток: {{ object.order.remaining }} грн.)"{% endif %}
+                type="text" name="order_select" class="orders-typeahead form-control" autocomplete="off" placeholder="Заказ" id="id_order_select">
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group date-group col">
+            {% include "docbox/form/field.html" with field=form.date %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            {% include "docbox/form/field.html" with field=form.comment %}
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Сохранить">
+    </div>
+</form>
+</div>

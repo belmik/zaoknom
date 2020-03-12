@@ -212,6 +212,9 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.amount} грн."
 
+    def get_absolute_edit_url(self):
+        return reverse("docbox:edit-transaction", kwargs={"pk": self.pk})
+
     class Meta:
         verbose_name = "Транзация"
         verbose_name_plural = "Транзакции"

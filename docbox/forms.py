@@ -284,7 +284,7 @@ class NewTransactionForm(DocboxFormMixin, ModelForm):
             "comment": Textarea({"rows": "3"}),
             "order": HiddenInput(),
             "client": HiddenInput(),
-            "cashbox": CheckboxInput({"class": "custom-control-input", "checked": True}),
+            "cashbox": CheckboxInput({"class": "custom-control-input"}),
         }
 
 

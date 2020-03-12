@@ -29,6 +29,11 @@ docbox_patterns = (
         path("transactions", views.TransactionList.as_view(), name="transactions-list"),
         path("transaction/new", views.NewTransaction.as_view(), name="new-transaction"),
         path(
+            "transaction/<uuid:pk>/edit",
+            views.EditTransaction.as_view(),
+            name="edit-transaction",
+        ),
+        path(
             "transaction/<uuid:pk>/delete",
             views.DeleteTransaction.as_view(),
             name="delete-transaction",
