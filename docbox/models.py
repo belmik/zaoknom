@@ -166,10 +166,10 @@ class Price(models.Model):
             products = products - self.mounting
 
         if self.delivery:
-            products = products = self.delivery
+            products = products - self.delivery
 
         if self.added:
-            products = products = self.added
+            products = products - self.added
 
         return products
 
