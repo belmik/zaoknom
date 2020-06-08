@@ -3,6 +3,10 @@
 {% load docbox_price %}
 {% load docbox_phone %}
 
+{% block tab_title %}
+{{ object.name }}
+{% endblock tab_title %}
+
 {% block page_header %}
 {{ object.name }} {% if object.phone %} {{ object.phone|phone }}{% endif %}
 <a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">

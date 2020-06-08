@@ -1,6 +1,10 @@
 {% extends 'docbox/base.html' %}
 {% load docbox_price %}
 
+{% block tab_title %}
+Удаление транзакции: {{ object.amount|price}}
+{% endblock tab_title %}
+
 {% block page_header %}
 Удаление транзакции
 {% endblock page_header %}

@@ -1,6 +1,10 @@
 {% extends 'docbox/base.html' %}
 {% load docbox_price %}
 
+{% block tab_title %}
+Заказ: {{ object.provider_code }}
+{% endblock tab_title %}
+
 {% block page_header %}
 Заказ: {{ object.provider_code }}
 <a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">

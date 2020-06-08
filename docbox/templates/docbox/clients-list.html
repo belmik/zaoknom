@@ -1,13 +1,15 @@
 {% extends 'docbox/base.html' %}
 {% load docbox_phone %}
 
+{% block tab_title %}
+Клиенты
+{% endblock tab_title %}
 
 {% block page_header %}
 Клиенты
 {% endblock page_header %}
 
 {% block content %}
-
 <table class="table table-hover">
   <thead>
     <tr>
@@ -26,5 +28,4 @@
 {% endfor %}
 </tbody>
 </table>
-    
 {% endblock content %}

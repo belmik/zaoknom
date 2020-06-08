@@ -1,9 +1,12 @@
 {% extends 'docbox/base.html' %}
 
-{% block page_header %}
-Редактирование клиента
-{% endblock page_header %}
+{% block tab_title %}
+Изменение клиента: {{ form.name.value }}
+{% endblock tab_title %}
 
+{% block page_header %}
+Изменение клиента
+{% endblock page_header %}
 
 {% block content %}
 <div class="container" style="max-width: 768px;">
