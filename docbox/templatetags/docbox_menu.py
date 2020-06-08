@@ -15,6 +15,7 @@ def main_menu(context):
     menu = [
         ("Заказы", "docbox:orders-list", "fa-copy", "docbox:new-order"),
         ("Клиенты", "docbox:clients-list", "fa-users", ""),
+        ("Поставщики", "docbox:providers-list", "fa-truck", "docbox:new-provider"),
         (
             "Транзакции",
             "docbox:transactions-list",

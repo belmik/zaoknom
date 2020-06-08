@@ -22,8 +22,9 @@ from docbox.forms import (
     EditOrderForm,
     NewOrderForm,
     NewTransactionForm,
+    ProviderForm,
 )
-from docbox.models import Client, Order, Transaction
+from docbox.models import Client, Order, Provider, Transaction
 
 
 class DocboxFormViewBase(FormView):
@@ -118,6 +119,35 @@ class EditClient(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
 
     def get_success_url(self):
         return reverse("docbox:client-detail", args=[self.object.pk])
+
+
+class ProvidersList(LoginRequiredMixin, ListView):
+    template_name = "docbox/providers-list.html"
+    model = Provider
+
+
+class ProviderDetail(LoginRequiredMixin, DetailView):
+    template_name = "docbox/provider-detail.html"
+    model = Provider
+
+
+class EditProvider(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
+    template_name = "docbox/edit-provider.html"
+    form_class = ProviderForm
+    model = Provider
+
+    def get_success_url(self):
+        return reverse("docbox:provider-detail", args=[self.object.pk])
+
+
+class NewProvider(LoginRequiredMixin, DocboxFormViewBase):
+    template_name = "docbox/new-provider.html"
+    form_class = ProviderForm
+    success_url = reverse_lazy("docbox:providers-list")
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 class OrdersList(LoginRequiredMixin, DocboxListViewBase):

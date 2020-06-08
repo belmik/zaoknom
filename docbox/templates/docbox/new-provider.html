@@ -1,0 +1,25 @@
+{% extends 'docbox/base.html' %}
+
+{% block tab_title %}
+Новая поставщик
+{% endblock tab_title %}
+
+{% block page_header %}
+Добавление нового поставщика
+{% endblock page_header %}
+
+{% block content %}
+<div class="container" style="max-width: 550px;">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            {% include "docbox/form/field.html" with field=form.name %}
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Сохранить">
+    </div>
+</form>
+</div>
+{% endblock content %}

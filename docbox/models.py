@@ -90,6 +90,12 @@ class Provider(models.Model):
     provider_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(verbose_name="Название", max_length=64)
 
+    def get_absolute_url(self):
+        return reverse("docbox:provider-detail", kwargs={"pk": self.pk})
+
+    def get_absolute_edit_url(self):
+        return reverse("docbox:provider-edit", kwargs={"pk": self.pk})
+
     class Meta:
         verbose_name = "Поставщик"
         verbose_name_plural = "Поставщики"

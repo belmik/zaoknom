@@ -297,6 +297,12 @@ class EditClientForm(DocboxFormMixin, ModelForm):
         }
 
 
+class ProviderForm(DocboxFormMixin, ModelForm):
+    class Meta:
+        model = Provider
+        fields = ["name"]
+
+
 class BookkeepingEditOrderForm(DocboxFormMixin, ModelForm):
     class Meta:
         model = Price

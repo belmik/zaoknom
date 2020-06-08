@@ -144,3 +144,14 @@ class NewTransactionFormCase(BaseTestCase):
         self.client.post(url, data=data, follow=True)
         self.order.refresh_from_db()
         self.assertEqual(self.order.remaining, self.total_price - amount)
+
+
+class NewProviderFormCase(BaseTestCase):
+    def test_new_provider_save(self):
+        provider_name = "Новый поставщик"
+        data = {
+            "name": provider_name,
+        }
+        url = reverse("docbox:new-provider")
+        r = self.client.post(url, data=data, follow=True)
+        self.assertContains(r, provider_name)

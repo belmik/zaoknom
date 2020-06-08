@@ -1,0 +1,22 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_phone %}
+
+{% block tab_title %}
+Поставщики
+{% endblock tab_title %}
+
+{% block page_header %}
+Поставщики
+{% endblock page_header %}
+
+{% block content %}
+<div class="container" style="max-width: 550px;">
+  <div class="list-group list-group-flush">
+    {% for provider in object_list %}
+      <a 
+      class="list-group-item list-group-item-action text-reset"
+      href="{% url 'docbox:provider-detail' provider.provider_id %}">{{ provider.name }}</a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
