@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import ROUND_HALF_UP
 from uuid import uuid4
 
 from django.db import models
@@ -182,7 +183,8 @@ class Price(models.Model):
     @property
     def extra_charge(self):
         if self.profit:
-            return f"{int(self.profit / self.provider * 100)}%"
+            extra_charge_percents = self.profit / self.provider * 100
+            return extra_charge_percents.quantize(0, rounding=ROUND_HALF_UP)
         return 0
 
     class Meta:
