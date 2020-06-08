@@ -13,14 +13,14 @@ isort = "*"
 pre-commit = "*"
 
 [packages]
-django = "~=2.2.6"
-psycopg2-binary = "~=2.8.3"
-social-auth-app-django = "~=3.1.0"
-python-jose = "~=3.0.1"
-gunicorn = "~=20.0.0"
+django = "~=3.0"
+psycopg2-binary = "~=2.8"
+social-auth-app-django = "~=3.1"
+python-jose = "~=3.0"
+gunicorn = "~=20.0"
 
 [requires]
-python_version = "3.7.5"
+python_version = "3.8"
 
 [pipenv]
 allow_prereleases = true
