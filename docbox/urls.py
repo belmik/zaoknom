@@ -5,7 +5,7 @@ from . import views
 
 docbox_patterns = (
     [
-        path("", views.HomeView.as_view(), name="home"),
+        path("", views.OrdersList.as_view(), name="home"),
         path("logout", LogoutView.as_view(), name="logout"),
         path("clients", views.ClientsList.as_view(), name="clients-list"),
         path("client/<uuid:pk>", views.ClientDetail.as_view(), name="client-detail"),

@@ -90,19 +90,6 @@ class ZaoknomView(TemplateView):
     template_name = "zaoknom/index.html"
 
 
-class HomeView(LoginRequiredMixin, ListView):
-    template_name = "docbox/home.html"
-    model = Order
-
-    def get_queryset(self):
-        return super().get_queryset().exclude(status="finished")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["transactions"] = Transaction.objects.all().order_by("-date")[:25]
-        return context
-
-
 class ClientsList(LoginRequiredMixin, ListView):
     template_name = "docbox/clients-list.html"
     model = Client
