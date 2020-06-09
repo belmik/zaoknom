@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
 from django.utils import formats
 from django.views.generic import (
@@ -341,6 +342,12 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
     def get(self, request, *args, **kwargs):
         order_pk = request.resolver_match.kwargs["pk"]
         self.order = Order.objects.get(order_id=order_pk)
+
+        status = request.GET.get("status", default=False)
+        if status in dict(Order.STATUS_CHOICES):
+            self.order.status = status
+            self.order.save()
+            return redirect("docbox:orders-list")
 
         return super().get(request, *args, **kwargs)
 
