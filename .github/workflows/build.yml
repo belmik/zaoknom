@@ -1,0 +1,22 @@
+name: Test and build image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build and push image to github
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v1
+        with:
+          registry: docker.pkg.github.com
+          repository: belmik/zaoknom/docbox
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
