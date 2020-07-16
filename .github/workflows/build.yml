@@ -13,11 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Build and push
+      - name: Build and push docbox
         uses: docker/build-push-action@v1
         with:
           registry: docker.pkg.github.com
           repository: belmik/zaoknom/docbox
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          tag_with_ref: true
+
+      - name: Build and push nginx
+        uses: docker/build-push-action@v1
+        with:
+          registry: docker.pkg.github.com
+          repository: belmik/zaoknom/nginx
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          path: nginx
           tag_with_ref: true
