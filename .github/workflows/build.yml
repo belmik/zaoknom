@@ -20,3 +20,4 @@ jobs:
           repository: belmik/zaoknom/docbox
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          tag_with_ref: true
