@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
 from django.utils import formats
@@ -99,6 +99,12 @@ class ClientDetail(LoginRequiredMixin, DetailView):
     template_name = "docbox/client-detail.html"
     model = Client
 
+    def render_to_response(self, context, **response_kwargs):
+        if not self.object.orders and not self.object.transactions:
+            return redirect("docbox:delete-client", pk=self.object.pk)
+
+        return super().render_to_response(context, **response_kwargs)
+
 
 class EditClient(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
     template_name = "docbox/edit-client.html"
@@ -107,6 +113,30 @@ class EditClient(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
 
     def get_success_url(self):
         return reverse("docbox:client-detail", args=[self.object.pk])
+
+
+class DeleteClient(LoginRequiredMixin, DeleteView):
+    template_name = "docbox/delete-client.html"
+    model = Client
+    success_url = "/docbox/orders"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if not self.object.orders and not self.object.transactions:
+            context["client_clean"] = True
+
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if not self.object.orders and not self.object.transactions:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+
+        return redirect("docbox:delete-client", pk=self.object.pk)
 
 
 class ProvidersList(LoginRequiredMixin, ListView):

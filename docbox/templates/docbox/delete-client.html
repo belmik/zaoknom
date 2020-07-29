@@ -1,0 +1,26 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_price %}
+
+{% block tab_title %}
+Удаление клиента {{ object.name }}
+{% endblock tab_title %}
+
+{% block page_header %}
+Удаление клиента
+{% endblock page_header %}
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+    {% if client_clean %}
+    <p class="text-center"> У клиента <b>{{ object.name }}</b> {% if object.phone %}({{ object.phone }}){% endif %} нет заказов и транзакций, удалить его?</p>
+    <form method="post">
+    {% csrf_token %}
+    <div class="form-row text-center mb-5">
+        <input type="submit" class="mx-auto mt-5 btn btn-danger" value="Удалить">
+    </div>
+    </form>
+    {% else %}
+    <p class="text-center"> Нельзя удалить клиента <b>{{ object.name }}{% if object.phone %} ({{ object.phone }}){% endif %}</b> так как за ним закреплены заказы или транзакции.</p>
+    {% endif %}
+</div>
+{% endblock content %}

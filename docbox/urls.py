@@ -10,6 +10,7 @@ docbox_patterns = (
         path("clients", views.ClientsList.as_view(), name="clients-list"),
         path("client/<uuid:pk>", views.ClientDetail.as_view(), name="client-detail"),
         path("client/<uuid:pk>/edit", views.EditClient.as_view(), name="client-edit"),
+        path("client/<uuid:pk>/delete", views.DeleteClient.as_view(), name="delete-client"),
         path("providers", views.ProvidersList.as_view(), name="providers-list"),
         path("provider/new", views.NewProvider.as_view(), name="new-provider"),
         path("provider/<uuid:pk>", views.ProviderDetail.as_view(), name="provider-detail"),
