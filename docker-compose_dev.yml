@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD
+    volumes:
+      - db:/var/lib/postgresql/data
+  web:
+    build: .
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - ALLOWED_HOSTS=localhost;0.0.0.0
+      - DEBUG=True
+      - DB_HOST=db
+      - DB_ENGINE=django.db.backends.postgresql
+      - SECRET_KEY
+      - POSTGRES_PASSWORD
+      - LOGIN_URL=/login/github
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS
+      - SOCIAL_AUTH_GITHUB_KEY
+      - SOCIAL_AUTH_GITHUB_SECRET
+      - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
+    ports:
+      - 8000:8000
+    volumes:
+      - ./static:/usr/src/app/docbox/static
+    depends_on:
+      - db
+
+volumes:
+  db:
