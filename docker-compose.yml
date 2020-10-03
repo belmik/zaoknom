@@ -26,6 +26,7 @@ services:
       - SOCIAL_AUTH_GITHUB_KEY
       - SOCIAL_AUTH_GITHUB_SECRET
       - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
+      - GOOGLE_SERVICE_ACCOUNT_CREDS
     depends_on:
       - db
   nginx:

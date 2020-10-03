@@ -220,6 +220,25 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.amount} грн."
 
+    @property
+    def data_for_csv(self):
+        cashbox = "y" if self.cashbox else "n"
+        client = self.client.name if self.client else ""
+        provider = self.provider.name if self.provider else ""
+        order = self.order.provider_code if self.order else ""
+
+        data = [
+            cashbox,
+            self.date,
+            self.amount,
+            client,
+            provider,
+            order,
+            self.comment,
+        ]
+
+        return data
+
     def get_absolute_edit_url(self):
         return reverse("docbox:edit-transaction", kwargs={"pk": self.pk})
 
