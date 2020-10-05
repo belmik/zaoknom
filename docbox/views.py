@@ -286,6 +286,7 @@ class NewTransaction(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context["orders_list"] = Order.objects.all().exclude(status="finished")
         context["clients_list"] = Client.objects.all()
+        context["providers_list"] = Provider.objects.all()
         return context
 
     def get_initial(self):
@@ -310,6 +311,7 @@ class EditTransaction(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
         context = super().get_context_data(**kwargs)
         context["orders_list"] = Order.objects.all().exclude(status="finished")
         context["clients_list"] = Client.objects.all()
+        context["providers_list"] = Provider.objects.all()
         return context
 
 

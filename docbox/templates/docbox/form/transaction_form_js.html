@@ -1,0 +1,80 @@
+<script>
+$.typeahead({
+    input: ".orders-typeahead",
+    order: "asc",
+    minLength: 0,
+    searchOnFocus: false,
+    templateValue: '{% templatetag openvariable %}display{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for order in orders_list %}{
+            display: '{{ order.provider_code }} - {{ order.client.name }} (остаток: {{ order.remaining }} грн.)',
+            order_id: '{{ order.order_id }}',
+            client_name: '{{ order.client.name }}',
+            client_id: '{{ order.client.client_id }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_order").val(item.order_id);
+            $("#id_client").val(item.client_id);
+            $(".clients-typeahead").val(item.client_name);
+        },
+        onCancel: function(node, event){
+            $("#id_order").val("");
+        },
+    }
+    
+});
+$.typeahead({
+    input: ".clients-typeahead",
+    order: "asc",
+    minLength: 0,
+    searchOnFocus: false,
+    templateValue: '{% templatetag openvariable %}name{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for client in clients_list %}{
+            display: '{{ client }}',
+            name: '{{ client.name }}',
+            client_id: '{{ client.client_id }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_client").val(item.client_id);
+        },
+        onCancel: function(node, event){
+            $("#id_client").val("");
+        },
+    }
+    
+});
+$.typeahead({
+    input: ".provider-typeahead",
+    order: "asc",
+    minLength: 0,
+    searchOnFocus: false,
+    templateValue: '{% templatetag openvariable %}name{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for provider in providers_list %}{
+            display: '{{ provider.name }}',
+            name: '{{ provider.name }}',
+            provider_id: '{{ provider.provider_id }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_provider").val(item.provider_id);
+        },
+        onCancel: function(node, event){
+            $("#id_provider").val("");
+        },
+    }
+    
+});
+</script>

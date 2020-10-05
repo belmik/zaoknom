@@ -276,7 +276,7 @@ class EditOrderForm(NewOrderForm):
 class NewTransactionForm(DocboxFormMixin, ModelForm):
     class Meta:
         model = Transaction
-        fields = ["amount", "date", "comment", "order", "client", "cashbox"]
+        fields = ["amount", "date", "comment", "order", "client", "cashbox", "provider"]
         widgets = {
             "amount": TextInput(
                 {"class": "text-right", "noplaceholder": "on", "autofocus": True}
@@ -284,6 +284,7 @@ class NewTransactionForm(DocboxFormMixin, ModelForm):
             "comment": Textarea({"rows": "3"}),
             "order": HiddenInput(),
             "client": HiddenInput(),
+            "provider": HiddenInput(),
             "cashbox": CheckboxInput({"class": "custom-control-input"}),
         }
 

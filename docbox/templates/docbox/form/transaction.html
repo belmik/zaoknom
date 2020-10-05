@@ -36,6 +36,16 @@
         </div>
     </div>
     <div class="form-row">
+        <div class="typeahead__container form-group col">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.provider %}
+                <input
+                {% if object.provider %}value="{{ object.provider.name }}"{% endif %}
+                 type="text" name="provider_select" class="provider-typeahead form-control" autocomplete="off" placeholder="Поставщик" id="id_provider_select">
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
         <div class="form-group date-group col">
             {% include "docbox/form/field.html" with field=form.date %}
         </div>
