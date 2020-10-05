@@ -146,6 +146,20 @@ class NewTransactionFormCase(BaseTestCase):
         self.assertEqual(self.order.remaining, self.total_price - amount)
 
 
+class NewTransactionForProviderFormCase(BaseTestCase):
+    def test_new_transaction_provider_save(self):
+        amount = 2000
+        data = {
+            "amount": amount,
+            "date": date.today(),
+            "provider": self.order.provider.pk,
+        }
+        url = reverse("docbox:new-transaction")
+        self.client.post(url, data=data, follow=True)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.provider.transaction_set.first().amount, amount)
+
+
 class NewProviderFormCase(BaseTestCase):
     def test_new_provider_save(self):
         provider_name = "Новый поставщик"
