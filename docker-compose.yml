@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   db:
-    image: postgres
+    image: postgres:12
     restart: always
     environment:
       - POSTGRES_PASSWORD
@@ -13,7 +13,7 @@ services:
     restart: always
     command: gunicorn docbox.wsgi:application --bind 0.0.0.0:8000 --capture-output
     environment:
-      - ALLOWED_HOSTS=zaoknom.pp.ua
+      - ALLOWED_HOSTS
       - DEBUG=False
       - DB_HOST=db
       - DB_ENGINE=django.db.backends.postgresql
@@ -27,6 +27,7 @@ services:
       - SOCIAL_AUTH_GITHUB_SECRET
       - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
       - GOOGLE_SERVICE_ACCOUNT_CREDS
+      - GDRIVE_BACKUP_FOLDER_ID
     depends_on:
       - db
   nginx:
