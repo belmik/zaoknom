@@ -1,6 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import include, path
 
+from .views import api as api_views
 from .views import site as views
 
 docbox_patterns = (
@@ -49,9 +50,15 @@ docbox_patterns = (
     "docbox",
 )
 
+docbox_api_patterns = (
+    [path("balance", api_views.GetBalance.as_view(), name="get-balance")],
+    "docbox-api",
+)
+
 
 urlpatterns = [
     path("", views.ZaoknomView.as_view(), name="zaoknom-home"),
     path("docbox/", include(docbox_patterns)),
+    path("docbox/api/", include(docbox_api_patterns)),
     path("", include("social_django.urls", namespace="social")),
 ]

@@ -13,6 +13,7 @@ services:
     restart: always
     command: gunicorn docbox.wsgi:application --bind 0.0.0.0:8000 --capture-output
     environment:
+      - API_TOKEN
       - ALLOWED_HOSTS
       - DEBUG=False
       - DB_HOST=db
