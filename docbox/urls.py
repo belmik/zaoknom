@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import include, path
 
-from . import views
+from .views import site as views
 
 docbox_patterns = (
     [
@@ -18,7 +18,9 @@ docbox_patterns = (
         path("orders", views.OrdersList.as_view(), name="orders-list"),
         path("orders/export", views.CsvExport.as_view(), name="export-csv"),
         path(
-            "orders/<uuid:client_pk>/", views.OrdersList.as_view(), name="client-orders-list",
+            "orders/<uuid:client_pk>/",
+            views.OrdersList.as_view(),
+            name="client-orders-list",
         ),
         path(
             "bookkeeping/orders", views.BookkeepingOrders.as_view(), name="bookkeeping-orders"
