@@ -7,7 +7,7 @@ from django.views.generic import View
 from docbox.models import Transaction
 
 
-class GetBalance(View):
+class ApiBaseView(View):
     token = os.getenv("API_TOKEN")
 
     def setup(self, request, *args, **kwargs):
@@ -18,10 +18,14 @@ class GetBalance(View):
         if auth_header == f"Bearer {self.token}":
             self.auth = True
 
-    def get(self, request, *args, **kwargs):
-        cashbox_sum = Transaction.objects.filter(cashbox=True).aggregate(models.Sum("amount"))
-
+    def dispatch(self, request, *args, **kwargs):
         if self.auth:
-            return JsonResponse({"balance": cashbox_sum.get("amount__sum", 0)})
+            return super().dispatch(request, *args, **kwargs)
 
         return HttpResponseBadRequest()
+
+
+class GetBalance(ApiBaseView):
+    def get(self, request, *args, **kwargs):
+        cashbox_sum = Transaction.objects.filter(cashbox=True).aggregate(models.Sum("amount"))
+        return JsonResponse({"balance": cashbox_sum.get("amount__sum", 0)})
