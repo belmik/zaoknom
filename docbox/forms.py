@@ -27,11 +27,11 @@ class DocboxFormMixin(object):
         self.update_html_attributes()
 
     def update_html_attributes(self):
-        """ Update fields widget html attributes.
+        """Update fields widget html attributes.
 
-            add form-conrol to the class html attribute
-            set autocomplete attruibute to off
-            set placeholder attribute with value of label
+        add form-conrol to the class html attribute
+        set autocomplete attruibute to off
+        set placeholder attribute with value of label
         """
 
         for name, field in self.fields.items():
@@ -143,7 +143,7 @@ class EditOrderForm(NewOrderForm):
     provider_code = CharField(
         label="Номер заказа у поставщика", max_length=1024, required=False
     )
-    status = ChoiceField(label="Статус", choices=Order.STATUS_CHOICES)
+    status = ChoiceField(label="Статус", choices=Order.Status.choices)
     provider_name = ModelChoiceField(
         label="Поставщик",
         queryset=Provider.objects.all(),

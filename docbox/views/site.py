@@ -172,7 +172,7 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     template_name = "docbox/orders-list.html"
     model = Order
 
-    status_choices = Order.STATUS_CHOICES.copy()
+    status_choices = Order.Status.choices.copy()
     status_choices.append(("all", "все"))
     status_choices.append(("not_finished", "не завершен"))
 
@@ -363,7 +363,7 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
         self.order = Order.objects.get(order_id=order_pk)
 
         status = request.GET.get("status", default=False)
-        if status in dict(Order.STATUS_CHOICES):
+        if status in Order.Status.values:
             self.order.status = status
             self.order.save()
             return redirect("docbox:orders-list")

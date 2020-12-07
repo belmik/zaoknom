@@ -249,14 +249,14 @@ class Transaction(models.Model):
 
 
 class Order(models.Model):
-    STATUS_CHOICES = [
-        ("new", "новый"),
-        ("waiting_for_paiment", "ожидает оплаты"),
-        ("in_production", "в работе"),
-        ("delivered", "доставлен"),
-        ("mounted", "установлен"),
-        ("finished", "завершен"),
-    ]
+    class Status(models.TextChoices):
+        NEW = "new", "новый"
+        WAITING_FOR_PAIMENT = "waiting_for_paiment", "ожидает оплаты"
+        IN_PRODUCTION = "in_production", "в работе"
+        DELIVERED = "delivered", "доставлен"
+        MOUNTED = "mounted", "установлен"
+        FINISHED = "finished", "завершен"
+
     ORDER_TYPE_CHOICES = [
         ("pvc", "ПВХ изделия"),
         ("blinds", "шторы и жалюзи"),
@@ -270,7 +270,7 @@ class Order(models.Model):
         verbose_name="Дата оформления", default=date.today, null=True
     )
     client = models.ForeignKey("Client", verbose_name="Клиент", on_delete=models.PROTECT)
-    price = models.OneToOneField("Price", verbose_name="Цены", on_delete=models.CASCADE,)
+    price = models.OneToOneField("Price", verbose_name="Цены", on_delete=models.CASCADE)
     address = models.ForeignKey(
         "Address", verbose_name="Адрес", null=True, on_delete=models.PROTECT, blank=True
     )
@@ -288,7 +288,7 @@ class Order(models.Model):
         verbose_name="Производственный номер", max_length=1024, blank=True, default="б/н"
     )
     status = models.SlugField(
-        verbose_name="Статус", choices=STATUS_CHOICES, default="new", blank=True
+        verbose_name="Статус", choices=Status.choices, default="new", blank=True
     )
     category = models.SlugField(
         verbose_name="Категория",
