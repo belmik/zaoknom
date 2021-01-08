@@ -77,7 +77,7 @@
       <td>
         {% if transaction.order %}
         <a class="text-reset" href="{% url 'docbox:order-detail' transaction.order.pk %}">
-          {{ transaction.order.provider_code }}
+          {{ transaction.order.provider_orders_str }}
         </a>
         {% endif %}
       </td>

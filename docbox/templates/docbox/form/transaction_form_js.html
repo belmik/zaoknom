@@ -8,7 +8,7 @@ $.typeahead({
     source: {
         data: [
         {% for order in orders_list %}{
-            display: '{{ order.provider_code }} - {{ order.client.name }} (остаток: {{ order.remaining }} грн.)',
+            display: '{{ order.provider_orders_str }} - {{ order.client.name }} (остаток: {{ order.remaining }} грн.)',
             order_id: '{{ order.order_id }}',
             client_name: '{{ order.client.name }}',
             client_id: '{{ order.client.client_id }}',

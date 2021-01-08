@@ -2,11 +2,11 @@
 {% load docbox_price %}
 
 {% block tab_title %}
-Заказ: {{ object.provider_code }}
+Заказ: {{ object.provider_orders_str }}
 {% endblock tab_title %}
 
 {% block page_header %}
-Заказ: {{ object.provider_code }}
+Заказ: {{ object.provider_orders_str }}
 <a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">
   <span class="fas fa-pen fa-fw"></span>
 </a>

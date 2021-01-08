@@ -1,0 +1,100 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_price %}
+
+
+{% block tab_title %}
+Новый номер заказа
+{% endblock tab_title %}
+
+{% block page_header %}
+Добавление нового номера заказа у поставщика
+{% endblock page_header %}
+
+{% block content %}
+<div class="container" style="max-width: 350px;">
+<dl class="row">
+    <dt class="col-sm-5">Заказчик:</dt>
+    <dd class="col-sm-7">
+        <a href="{% url 'docbox:client-detail' order.client.pk %}" class="text-reset">
+        {{ order.client.name }}
+        </a>    
+    </dd>    
+    <dt class="col-sm-5"> Заказ создан:</dt>
+    <dd class="col-sm-7">{{ order.date_created|date:'d.m.y' }}</dd>
+
+    <dt class="col-sm-5">Статус:</dt>
+    <dd class="col-sm-7">{{ order.get_status_display }}</dd>
+    {% if order.price %}
+        <dt class="col-sm-5">Cумма:</dt>
+        <dd class="col-sm-7">{{ order.price.total|price }}</dd>
+    {% endif %}
+    {% if order.comment %}
+        <dt class="col-sm-5">Комментарий:</dt>
+        <dd class="col-sm-7">{{ order.comment }}</dd>
+    {% endif %}
+
+</dl>
+<form method="post">
+    {% csrf_token %}
+    {% include "docbox/form/field.html" with field=form.order %}
+    <div class="form-row">
+        <div class="typeahead__container form-group col">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.provider %}
+                <input
+                value="{{ default_provider_name }}"
+                type="text" name="provider_select" class="providers-typeahead form-control" autocomplete="off" placeholder="Поставщик" id="id_provider_select">
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+        {% include "docbox/form/field.html" with field=form.code%}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            {% include "docbox/form/field.html" with field=form.price prepend="Сумма:" append="грн." %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            {% include "docbox/form/field.html" with field=form.order_content %}
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Добавиь">
+    </div>
+</form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+$.typeahead({
+    input: ".providers-typeahead",
+    order: "asc",
+    minLength: 0,
+    searchOnFocus: true,
+    templateValue: '{% templatetag openvariable %}name{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for provider in providers_list %}{
+            display: '{{ provider }}',
+            name: '{{ provider.name }}',
+            provider_id: '{{ provider.provider_id }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_provider").val(item.provider_id);
+        },
+        onCancel: function(node, event){
+            $("#id_provider").val("");
+        },
+    }
+    
+});
+</script>
+{% endblock scripts %}

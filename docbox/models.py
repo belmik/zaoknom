@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from docbox.validators import validate_phone
 
@@ -225,7 +226,7 @@ class Transaction(models.Model):
         cashbox = "y" if self.cashbox else "n"
         client = self.client.name if self.client else ""
         provider = self.provider.name if self.provider else ""
-        order = self.order.provider_code if self.order else ""
+        order = self.order.provider_orders_str if self.order else ""
 
         data = [
             cashbox,
@@ -327,7 +328,7 @@ class Order(models.Model):
     def data_for_csv(self):
         data = [
             self.date_created,
-            self.provider_code,
+            self.provider_orders_str,
             self.get_status_display(),
             self.client.name,
             self.address,
@@ -348,6 +349,16 @@ class Order(models.Model):
 
         return data
 
+    @property
+    def provider_orders(self):
+        return self.providerorder_set.all()
+
+    @property
+    def provider_orders_str(self):
+        if self.providerorder_set.count() == 0:
+            return self.provider_code
+        return ", ".join([provider_order.code for provider_order in self.provider_orders])
+
     def __str__(self):
         order = f"{self.client.name}"
         if hasattr(self, "price"):
@@ -366,3 +377,21 @@ class Order(models.Model):
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
         ordering = ["-date_created"]
+
+
+class ProviderOrder(models.Model):
+    provider_order_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Заказ")
+    provider = models.ForeignKey(Provider, on_delete=models.PROTECT, verbose_name="Поставщик")
+    code = models.CharField(verbose_name="Номер заказа", max_length=16)
+    price = models.DecimalField(
+        verbose_name="Сумма заказа", max_digits=10, decimal_places=0, blank=True, default=0
+    )
+    order_content = models.TextField(
+        verbose_name="Состав заказа", max_length=1024, blank=True, default=""
+    )
+    creation_date = models.DateTimeField(verbose_name="Дата добавления", default=timezone.now)
+    delivery_date = models.DateField(verbose_name="Дата доставки", blank=True, null=True)
+
+    def __str__(self):
+        return self.code

@@ -88,7 +88,7 @@
       <td>{{ order.date_created|date:'d.m.y'}}</td>
       <td>
         <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
-          {{ order.provider_code}}
+          {{ order.provider_orders_str}}
         </a>
       </td>
       <td>{{ order.get_status_display }}</td>
@@ -126,6 +126,7 @@
 
         </dl>
         <a class="btn btn-light btn-sm" href="{% url 'docbox:order-edit' order.pk %}">изменить</a>
+        <a class="btn btn-light btn-sm" href="{% url 'docbox:new-provider-order' order.pk %}">добавить номер</a>
         {% if order.status == 'new' or order.status == 'waiting_for_paiment' %}
           <a class="btn btn-info btn-sm" href="{% url 'docbox:order-edit' order.pk %}?status=in_production">в работе</a>
         {% endif %}

@@ -29,6 +29,7 @@ services:
       - SOCIAL_AUTH_GITHUB_WHITELISTED_EMAILS
       - GOOGLE_SERVICE_ACCOUNT_CREDS
       - GDRIVE_BACKUP_FOLDER_ID
+      - DEFAULT_PROVIDER
     depends_on:
       - db
   nginx:

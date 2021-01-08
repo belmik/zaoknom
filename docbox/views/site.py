@@ -1,7 +1,10 @@
 import csv
+import logging
+import os
 from datetime import date, datetime, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -22,10 +25,14 @@ from docbox.forms import (
     EditClientForm,
     EditOrderForm,
     NewOrderForm,
+    NewProviderOrderForm,
     NewTransactionForm,
     ProviderForm,
 )
 from docbox.models import Client, Order, Provider, Transaction
+
+logger = logging.getLogger(__name__)
+DEFAULT_PROVIDER = os.getenv("DEFAULT_PROVIDER", False)
 
 
 class DocboxFormViewBase(FormView):
@@ -168,6 +175,51 @@ class NewProvider(LoginRequiredMixin, DocboxFormViewBase):
         return super().form_valid(form)
 
 
+class NewProviderOrder(LoginRequiredMixin, DocboxFormViewBase):
+    template_name = "docbox/new-provider-order.html"
+    form_class = NewProviderOrderForm
+    success_url = reverse_lazy("docbox:orders-list")
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.order = Order.objects.get(order_id=kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["order"] = self.order
+        context["providers_list"] = Provider.objects.all()
+        context["default_provider_name"] = DEFAULT_PROVIDER
+        return context
+
+    def get_initial(self):
+        initial_data = super().get_initial()
+        initial_data.update({"order": self.order.pk})
+
+        default_provider = self.get_default_provider()
+        if default_provider:
+            initial_data.update({"provider": default_provider.pk})
+        return initial_data
+
+    def get_default_provider(self):
+        """Loading default provider from environment option.
+        This should be replased with proper setting in the UI"""
+
+        if not DEFAULT_PROVIDER:
+            return False
+
+        try:
+            default_provider_obj = Provider.objects.get(name=DEFAULT_PROVIDER)
+        except ObjectDoesNotExist:
+            logger.warning(f"Default provider with name {DEFAULT_PROVIDER} doesn't exist")
+            return False
+
+        return default_provider_obj
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
 class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     template_name = "docbox/orders-list.html"
     model = Order
@@ -193,7 +245,6 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
         self.status = request.session.get("status", "all")
         self.order_type = request.session.get("type", "all")
         self.client_pk = self.kwargs.get("client_pk")
-
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

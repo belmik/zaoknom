@@ -32,6 +32,11 @@ docbox_patterns = (
             name="bookkeeping-order-edit",
         ),
         path("order/<uuid:pk>", views.OrderDetail.as_view(), name="order-detail"),
+        path(
+            "order/<uuid:pk>/new-provider-order",
+            views.NewProviderOrder.as_view(),
+            name="new-provider-order",
+        ),
         path("order/<uuid:pk>/edit", views.EditOrder.as_view(), name="order-edit"),
         path("order/new", views.NewOrder.as_view(), name="new-order"),
         path("transactions", views.TransactionList.as_view(), name="transactions-list"),

@@ -30,7 +30,7 @@
             <div class="typeahead__query ">
                 {% include "docbox/form/field.html" with field=form.order %}
                 <input
-                {% if object.order %}value="{{ object.order.provider_code }} (остаток: {{ object.order.remaining }} грн.)"{% endif %}
+                {% if object.order %}value="{{ object.order.provider_orders_str }} (остаток: {{ object.order.remaining }} грн.)"{% endif %}
                 type="text" name="order_select" class="orders-typeahead form-control" autocomplete="off" placeholder="Заказ" id="id_order_select">
             </div>
         </div>

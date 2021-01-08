@@ -38,7 +38,7 @@
             <td>{{ order.date_created|date:'d.m.y' }}</td>
             <td>
                 <a class="text-reset" href="{% url 'docbox:order-detail' order.pk %}">
-                    {{ order.provider_code }}
+                    {{ order.provider_orders_str }}
                 </a>
             </td>
             <td>{{ order.get_status_display }}</td>

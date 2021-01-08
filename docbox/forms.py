@@ -14,7 +14,16 @@ from django.forms import (
     TextInput,
 )
 
-from docbox.models import Address, Client, Mounter, Order, Price, Provider, Transaction
+from docbox.models import (
+    Address,
+    Client,
+    Mounter,
+    Order,
+    Price,
+    Provider,
+    ProviderOrder,
+    Transaction,
+)
 from docbox.validators import validate_phone
 
 
@@ -302,6 +311,19 @@ class ProviderForm(DocboxFormMixin, ModelForm):
     class Meta:
         model = Provider
         fields = ["name"]
+
+
+class NewProviderOrderForm(DocboxFormMixin, ModelForm):
+    class Meta:
+        model = ProviderOrder
+        fields = ["order", "provider", "code", "price", "order_content"]
+        widgets = {
+            "order": HiddenInput(),
+            "provider": HiddenInput(),
+            "code": TextInput({"autofocus": True}),
+            "price": TextInput({"class": "text-right", "noplaceholder": "on"}),
+            "order_content": Textarea({"rows": "3"}),
+        }
 
 
 class BookkeepingEditOrderForm(DocboxFormMixin, ModelForm):

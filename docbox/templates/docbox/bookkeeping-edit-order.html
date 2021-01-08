@@ -2,11 +2,11 @@
 {% load docbox_price %}
 
 {% block tab_title %}
-Бухгалтерия, заказ: {{ order.provider_code }}
+Бухгалтерия, заказ: {{ order.provider_orders_str }}
 {% endblock tab_title %}
 
 {% block page_header %}
-Стоимость заказа: {{ order.provider_code }}
+Стоимость заказа: {{ order.provider_orders_str }}
 {% endblock page_header %}
 
 {% block content %}
