@@ -73,6 +73,7 @@
     {% endif %}
 
 </dl>
+{% if object.transactions %}
 <div class="row">
 <div class="col-sm-6 offset-sm-3">
   <h5 class="mt-5">Последние платежи:</h5>
@@ -106,4 +107,5 @@
     </table>
 </div>
 </div>
+{% endif %}
 {% endblock content %}
