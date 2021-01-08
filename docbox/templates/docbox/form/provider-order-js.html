@@ -1,0 +1,27 @@
+<script>
+$.typeahead({
+    input: ".providers-typeahead",
+    order: "asc",
+    minLength: 0,
+    searchOnFocus: true,
+    templateValue: '{% templatetag openvariable %}name{% templatetag closevariable %}',
+    source: {
+        data: [
+        {% for provider in providers_list %}{
+            display: '{{ provider }}',
+            name: '{{ provider.name }}',
+            provider_id: '{{ provider.provider_id }}',
+        },{% endfor %}
+        ]
+    },
+    callback: {
+        onClickAfter: function(node, a, item, event){
+            $("#id_provider").val(item.provider_id);
+        },
+        onCancel: function(node, event){
+            $("#id_provider").val("");
+        },
+    }
+    
+});
+</script>

@@ -29,7 +29,7 @@ from docbox.forms import (
     NewTransactionForm,
     ProviderForm,
 )
-from docbox.models import Client, Order, Provider, Transaction
+from docbox.models import Client, Order, Provider, ProviderOrder, Transaction
 
 logger = logging.getLogger(__name__)
 DEFAULT_PROVIDER = os.getenv("DEFAULT_PROVIDER", False)
@@ -218,6 +218,31 @@ class NewProviderOrder(LoginRequiredMixin, DocboxFormViewBase):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class EditProviderOrder(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
+    template_name = "docbox/edit-provider-order.html"
+    form_class = NewProviderOrderForm
+    model = ProviderOrder
+    success_url = reverse_lazy("docbox:orders-list")
+
+    def get(self, request, *args, **kwargs):
+        self.next = self.request.GET.get("next", False)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.next = self.request.POST.get("next", False)
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.next or str(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["next"] = self.next
+        context["order"] = self.object.order
+        context["providers_list"] = Provider.objects.all()
+        return context
 
 
 class OrdersList(LoginRequiredMixin, DocboxListViewBase):

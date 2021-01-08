@@ -169,3 +169,19 @@ class NewProviderFormCase(BaseTestCase):
         url = reverse("docbox:new-provider")
         r = self.client.post(url, data=data, follow=True)
         self.assertContains(r, provider_name)
+
+
+class NewProviderOrderFormCase(BaseTestCase):
+    def test_new_transaction_save(self):
+        provider_code = "123456"
+        data = {
+            "order": self.order.pk,
+            "provider": self.provider.pk,
+            "code": provider_code,
+            "price": 1000,
+            "order_content": "два изделия",
+        }
+        url = reverse("docbox:new-provider-order", args=[self.order.pk])
+        self.client.post(url, data=data, follow=True)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.provider_orders_str, provider_code)

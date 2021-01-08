@@ -395,3 +395,6 @@ class ProviderOrder(models.Model):
 
     def __str__(self):
         return self.code
+
+    def get_absolute_edit_url(self):
+        return reverse("docbox:edit-provider-order", kwargs={"pk": self.pk})

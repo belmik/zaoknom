@@ -14,7 +14,7 @@ class BaseTestCase(TestCase):
         client = Client.objects.create(name="Тестовый Заказчик", phone="0990000111")
         client_mounter = Client.objects.create(name="Тестовый монтажник")
         mounter = Mounter.objects.create(name=client_mounter)
-        provider = Provider.objects.create(name="Тестовый Поставщик")
+        self.provider = Provider.objects.create(name="Тестовый Поставщик")
         price = Price.objects.create(
             total=self.total_price, provider=3500, delivery=100, mounting=400
         )
@@ -28,7 +28,7 @@ class BaseTestCase(TestCase):
             price=price,
             address=address,
             mounter=mounter,
-            provider=provider,
+            provider=self.provider,
             provider_code="1111,1112",
             status="finished",
             category="pvc",

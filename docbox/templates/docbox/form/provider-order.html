@@ -1,0 +1,65 @@
+{% load docbox_price %}
+
+<div class="container" style="max-width: 350px;">
+<dl class="row">
+    <dt class="col-sm-5">Заказчик:</dt>
+    <dd class="col-sm-7">
+        <a href="{% url 'docbox:client-detail' order.client.pk %}" class="text-reset">
+        {{ order.client.name }}
+        </a>    
+    </dd>    
+    <dt class="col-sm-5"> Заказ создан:</dt>
+    <dd class="col-sm-7">{{ order.date_created|date:'d.m.y' }}</dd>
+
+    <dt class="col-sm-5">Статус:</dt>
+    <dd class="col-sm-7">{{ order.get_status_display }}</dd>
+    {% if order.price %}
+        <dt class="col-sm-5">Cумма:</dt>
+        <dd class="col-sm-7">{{ order.price.total|price }}</dd>
+    {% endif %}
+    {% if order.comment %}
+        <dt class="col-sm-5">Комментарий:</dt>
+        <dd class="col-sm-7">{{ order.comment }}</dd>
+    {% endif %}
+
+</dl>
+<form method="post">
+    {% csrf_token %}
+    {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+    {% endif %}
+    {% include "docbox/form/field.html" with field=form.order %}
+    <div class="form-row">
+        <div class="typeahead__container form-group col">
+            <div class="typeahead__query ">
+                {% include "docbox/form/field.html" with field=form.provider %}
+                <input
+                {% if object.provider %}
+                    value="{{ object.provider.name }}"
+                {% else %}
+                    value="{{ default_provider_name }}"
+                {% endif %}
+                type="text" name="provider_select" class="providers-typeahead form-control" autocomplete="off" placeholder="Поставщик" id="id_provider_select">
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+        {% include "docbox/form/field.html" with field=form.code%}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            {% include "docbox/form/field.html" with field=form.price prepend="Сумма:" append="грн." %}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            {% include "docbox/form/field.html" with field=form.order_content %}
+        </div>
+    </div>
+    <div class="form-row text-center">
+        <input type="submit" class="form-control btn btn-outline-secondary" value="Сохранить">
+    </div>
+</form>
+</div>

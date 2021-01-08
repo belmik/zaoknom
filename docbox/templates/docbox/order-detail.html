@@ -127,9 +127,13 @@
         {% for provider_order in object.provider_orders %}
         <tr>
             <td>{{ provider_order.creation_date|date:'d.m.y' }}</td>
-            <td>{{ provider_order.code }}</td>
+            <td>
+                <a class="text-reset" href="{% url 'docbox:edit-provider-order' provider_order.pk %}?next={{ request.path }}">
+                    {{ provider_order.code }}
+                </a>
+            </td>
             <td>{{ provider_order.provider }}</td>
-            <td>{{ transaction.order_content }}</td>
+            <td>{{ provider_order.order_content }}</td>
             <td>{{ provider_order.delivery_date|date:'d.m.y' }}</td>
             <td>
                 <a class="text-reset" href="">
