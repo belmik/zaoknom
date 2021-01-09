@@ -18,44 +18,18 @@ docbox_patterns = (
         path("provider/<uuid:pk>/edit", views.EditProvider.as_view(), name="provider-edit"),
         path("orders", views.OrdersList.as_view(), name="orders-list"),
         path("orders/export", views.CsvExport.as_view(), name="export-csv"),
-        path(
-            "orders/<uuid:client_pk>/",
-            views.OrdersList.as_view(),
-            name="client-orders-list",
-        ),
-        path(
-            "bookkeeping/orders", views.BookkeepingOrders.as_view(), name="bookkeeping-orders"
-        ),
-        path(
-            "bookkeeping/order/<uuid:pk>/edit",
-            views.BookkeepingEditOrder.as_view(),
-            name="bookkeeping-order-edit",
-        ),
+        path("orders/<uuid:client_pk>/", views.OrdersList.as_view(), name="client-orders-list",),
+        path("bookkeeping/orders", views.BookkeepingOrders.as_view(), name="bookkeeping-orders"),
+        path("bookkeeping/order/<uuid:pk>/edit", views.BookkeepingEditOrder.as_view(), name="bookkeeping-order-edit",),
         path("order/<uuid:pk>", views.OrderDetail.as_view(), name="order-detail"),
-        path(
-            "order/<uuid:pk>/new-provider-order",
-            views.NewProviderOrder.as_view(),
-            name="new-provider-order",
-        ),
-        path(
-            "provider-order/<uuid:pk>/edit",
-            views.EditProviderOrder.as_view(),
-            name="edit-provider-order",
-        ),
+        path("order/<uuid:pk>/new-provider-order", views.NewProviderOrder.as_view(), name="new-provider-order",),
+        path("provider-order/<uuid:pk>/edit", views.EditProviderOrder.as_view(), name="edit-provider-order",),
         path("order/<uuid:pk>/edit", views.EditOrder.as_view(), name="order-edit"),
         path("order/new", views.NewOrder.as_view(), name="new-order"),
         path("transactions", views.TransactionList.as_view(), name="transactions-list"),
         path("transaction/new", views.NewTransaction.as_view(), name="new-transaction"),
-        path(
-            "transaction/<uuid:pk>/edit",
-            views.EditTransaction.as_view(),
-            name="edit-transaction",
-        ),
-        path(
-            "transaction/<uuid:pk>/delete",
-            views.DeleteTransaction.as_view(),
-            name="delete-transaction",
-        ),
+        path("transaction/<uuid:pk>/edit", views.EditTransaction.as_view(), name="edit-transaction",),
+        path("transaction/<uuid:pk>/delete", views.DeleteTransaction.as_view(), name="delete-transaction",),
     ],
     "docbox",
 )

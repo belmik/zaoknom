@@ -15,6 +15,7 @@ repos:
         entry: pipenv run black
         args: [--line-length=95]
         types: [python]
+        exclude: urls.py
 
       - id: flake8
         name: flake8
