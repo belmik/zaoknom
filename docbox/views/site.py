@@ -486,7 +486,6 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
             "date_created": self.order.date_created,
             "date_delivery": getattr(self.order, "date_delivery", ""),
             "date_mounting": getattr(self.order, "date_mounting", ""),
-            "provider_code": getattr(self.order, "provider_code", ""),
             "status": getattr(self.order, "status", ""),
             "provider_name": getattr(self.order.provider, "name", ""),
             "category": getattr(self.order, "category", ""),
@@ -512,6 +511,7 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["clients_list"] = Client.objects.all()
+        context["order"] = self.order
         context["transactions_sum"] = self.order.transactions_sum
         return context
 

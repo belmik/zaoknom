@@ -85,7 +85,6 @@ class EditOrderFormCase(BaseTestCase):
         today = date.today()
         order_nonref_fields = {
             "date_created": today,
-            "provider_code": "11111",
             "status": "finished",
             "category": "pvc",
             "date_delivery": today + timedelta(days=10),

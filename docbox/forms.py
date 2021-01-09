@@ -149,9 +149,6 @@ class EditOrderForm(NewOrderForm):
         required=False,
         error_messages={"invalid": "Дата должна быть в формате дд.мм.гггг"},
     )
-    provider_code = CharField(
-        label="Номер заказа у поставщика", max_length=1024, required=False
-    )
     status = ChoiceField(label="Статус", choices=Order.Status.choices)
     provider_name = ModelChoiceField(
         label="Поставщик",
