@@ -245,6 +245,28 @@ class EditProviderOrder(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
         return context
 
 
+class DeleteProviderOreder(LoginRequiredMixin, DeleteView):
+    model = ProviderOrder
+    template_name = "docbox/delete-provider-order.html"
+    success_url = "/"
+
+    def get(self, request, *args, **kwargs):
+        self.next = self.request.GET.get("next", False)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.next = self.request.POST.get("next", False)
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.next or str(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["next"] = self.next
+        return context
+
+
 class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     template_name = "docbox/orders-list.html"
     model = Order

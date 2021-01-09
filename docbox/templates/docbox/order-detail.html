@@ -136,7 +136,7 @@
             <td>{{ provider_order.order_content }}</td>
             <td>{{ provider_order.delivery_date|date:'d.m.y' }}</td>
             <td>
-                <a class="text-reset" href="">
+                <a class="text-reset" href="{% url 'docbox:delete-provider-order' provider_order.pk %}?next={{ request.path }}">
                 <span class="fas fa-times fa-fw"></span>
                 </a>
             </td>
