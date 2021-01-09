@@ -264,6 +264,7 @@ class Order(models.Model):
         ("addons", "дополнения"),
         ("aluminum", "алюминий"),
         ("glass", "стеклопакеты"),
+        ("steel_doors", "стальные двери"),
     ]
 
     order_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
