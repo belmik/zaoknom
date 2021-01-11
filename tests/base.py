@@ -16,7 +16,7 @@ class BaseTestCase(TestCase):
         mounter = Mounter.objects.create(name=client_mounter)
         self.provider = Provider.objects.create(name="Тестовый Поставщик")
         price = Price.objects.create(
-            total=self.total_price, provider=3500, delivery=100, mounting=400
+            total=self.total_price, added_expenses=3500, delivery=100, mounting=400
         )
         address = Address.objects.create(
             town="Тестовый город", street="Тестовая", building="10", apartment="1"

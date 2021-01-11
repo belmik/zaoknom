@@ -523,11 +523,11 @@ class BookkeepingOrders(OrdersList):
         context = super().get_context_data(**kwargs)
 
         context["total_price"] = 0
-        context["total_provider"] = 0
+        context["total_expenses"] = 0
         context["total_profit"] = 0
         for order in self.object_list:
             context["total_price"] += order.price.products
-            context["total_provider"] += order.price.provider or 0
+            context["total_expenses"] += order.price.expenses
             context["total_profit"] += order.price.profit
 
         return context

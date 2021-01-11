@@ -146,8 +146,8 @@ class Address(models.Model):
 class Price(models.Model):
     price_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     total = models.DecimalField(verbose_name="Сумма заказа", max_digits=10, decimal_places=0)
-    provider = models.DecimalField(
-        verbose_name="Издлеия (поставщик)",
+    added_expenses = models.DecimalField(
+        verbose_name="Дополнительные расходы",
         max_digits=10,
         decimal_places=0,
         blank=True,
@@ -159,13 +159,6 @@ class Price(models.Model):
     mounting = models.DecimalField(
         verbose_name="Монтаж", max_digits=10, decimal_places=0, blank=True, null=True
     )
-    added = models.DecimalField(
-        verbose_name="Дополнительные расходы",
-        max_digits=10,
-        decimal_places=0,
-        blank=True,
-        null=True,
-    )
 
     @property
     def products(self):
@@ -176,21 +169,31 @@ class Price(models.Model):
         if self.delivery:
             products = products - self.delivery
 
-        if self.added:
-            products = products - self.added
-
         return products
 
     @property
+    def provider_orders_price(self):
+        provider_orders = self.order.providerorder_set
+        if provider_orders.count() == 0:
+            return 0
+        return provider_orders.aggregate(models.Sum("price"))["price__sum"]
+
+    @property
     def profit(self):
-        if self.provider:
-            return self.products - self.provider
+        if self.expenses:
+            return self.products - self.expenses
         return 0
+
+    @property
+    def expenses(self):
+        if self.added_expenses:
+            return self.provider_orders_price + self.added_expenses
+        return self.provider_orders_price
 
     @property
     def extra_charge(self):
         if self.profit:
-            extra_charge_percents = self.profit / self.provider * 100
+            extra_charge_percents = self.profit / self.expenses * 100
             return extra_charge_percents.quantize(0, rounding=ROUND_HALF_UP)
         return 0
 

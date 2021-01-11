@@ -26,7 +26,18 @@
     </div>
     <div class="form-row">
         <div class="input-group col mb-3">
-            {% include "docbox/form/field.html" with field=form.provider prepend="Завод:" append="грн." %}
+            <div class="input-group-prepend" style="height: 38px;">
+                <span class="input-group-text">Завод</span>
+            </div>
+            <input class="form-control text-right"  id="provider_orders_price" type="text" placeholder="{{order.price.provider_orders_price}}" disabled>
+            <div class="input-group-append" style="height: 38px;">
+                <span class="input-group-text">грн.</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="input-group col mb-3">
+            {% include "docbox/form/field.html" with field=form.added_expenses prepend="Доп. расх." append="грн." %}
         </div>
     </div>
     <div class="form-row">
@@ -61,12 +72,12 @@
 
 {% block scripts %}
 <script>
-$("#id_provider").change(function(){
+$("#id_added_expenses").change(function(){
     var products = {{ order.price.products }};
-    var provider = $(this).val();
-    var profit = products - provider;
+    var expenses = {{ order.price.provider_orders_price}} + Number($(this).val());
+    var profit = products - expenses;
     $("#profit").val(profit);
-    $("#extra_charge").val(Math.round(profit / provider * 100));
+    $("#extra_charge").val(Math.round(profit / expenses * 100));
   });
 </script>
 {% endblock scripts %}

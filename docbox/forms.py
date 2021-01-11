@@ -326,10 +326,10 @@ class NewProviderOrderForm(DocboxFormMixin, ModelForm):
 class BookkeepingEditOrderForm(DocboxFormMixin, ModelForm):
     class Meta:
         model = Price
-        fields = ["provider"]
+        fields = ["added_expenses"]
         labels = {
-            "provider": "0",
+            "added_expenses": "0",
         }
         widgets = {
-            "provider": TextInput({"class": "text-right", "autofocus": True}),
+            "added_expenses": TextInput({"class": "text-right", "autofocus": True}),
         }

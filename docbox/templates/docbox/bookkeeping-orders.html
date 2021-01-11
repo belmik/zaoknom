@@ -62,10 +62,10 @@
     </div>
   </form>
   <dl class="row mt-3 mb-0">
-    <dt class="col-sm-2">Цена изделий:</dt>
+    <dt class="col-sm-2">Сумма за изделия:</dt>
     <dd class="col-sm-10">{{ total_price|price }}</dd>
-    <dt class="col-sm-2">Поставщик:</dt>
-    <dd class="col-sm-10">{{ total_provider|price }}</dd>
+    <dt class="col-sm-2">Сумма расходов:</dt>
+    <dd class="col-sm-10">{{ total_expenses|price }}</dd>
     <dt class="col-sm-2">Прибыль:</dt>
     <dd class="col-sm-10">{{ total_profit|price }}</dd>
   </dl>
@@ -82,7 +82,8 @@
       <th data-field="client" scope="col" class="border-top-0">Клиент</th>
       <th data-field="status" scope="col" class="border-top-0">Статус</th>
       <th data-field="price" scope="col" class="border-top-0">Цена изделий</th>
-      <th data-field="provider_price" scope="col" class="border-top-0">Поставщик</th>
+      <th data-field="provider_price" scope="col" class="border-top-0">Цена поставщика</th>
+      <th data-field="added_expenses" scope="col" class="border-top-0">Доп. расходы</th>
       <th data-field="profit" scope="col" class="border-top-0">Прибыль</th>
       <th data-field="extra_charge" scope="col" class="border-top-0">Наценка</th>
     </tr>
@@ -103,9 +104,10 @@
       </td>
       <td>{{ order.get_status_display }}</td>
       <td class="text-right text-nowrap">{{ order.price.products|price }}</td>
+      <td class="text-right text-nowrap">{{ order.price.provider_orders_price|price }}</td>
       <td class="text-right text-nowrap">
         <a class="text-reset" href="{% url 'docbox:bookkeeping-order-edit' order.pk %}">
-          {{ order.price.provider|price }}</td>
+          {{ order.price.added_expenses|price }}</td>
         </a>
       <td class="text-right text-nowrap">{{ order.price.profit|price }}</td>
       <td class="text-right text-nowrap">{{ order.price.extra_charge }}%</td>
