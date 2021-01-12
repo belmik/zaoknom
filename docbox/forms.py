@@ -313,7 +313,7 @@ class ProviderForm(DocboxFormMixin, ModelForm):
 class NewProviderOrderForm(DocboxFormMixin, ModelForm):
     class Meta:
         model = ProviderOrder
-        fields = ["order", "provider", "code", "price", "order_content"]
+        fields = ["order", "provider", "code", "price", "status", "order_content"]
         widgets = {
             "order": HiddenInput(),
             "provider": HiddenInput(),

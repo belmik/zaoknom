@@ -117,6 +117,7 @@
             <tr>
                 <th scope="col">Дата</th>
                 <th scope="col">Номер заказа</th>
+                <th scope="col">Статус</th>
                 <th scope="col">Поставщик</th>
                 <th scope="col">Комментарий</th>
                 <th scope="col">Дата доставки</th>
@@ -132,6 +133,7 @@
                     {{ provider_order.code }}
                 </a>
             </td>
+            <td>{{ provider_order.get_status_display }}</td>
             <td>{{ provider_order.provider }}</td>
             <td>{{ provider_order.order_content }}</td>
             <td>{{ provider_order.delivery_date|date:'d.m.y' }}</td>

@@ -396,9 +396,17 @@ class ProviderOrder(models.Model):
     )
     creation_date = models.DateTimeField(verbose_name="Дата добавления", default=timezone.now)
     delivery_date = models.DateField(verbose_name="Дата доставки", blank=True, null=True)
+    status = models.SlugField(
+        verbose_name="Статус", choices=Order.Status.choices, default="new", blank=True
+    )
 
     def __str__(self):
         return self.code
 
     def get_absolute_edit_url(self):
         return reverse("docbox:edit-provider-order", kwargs={"pk": self.pk})
+
+    class Meta:
+        verbose_name = "Заказ поставщика"
+        verbose_name_plural = "Заказы поставщика"
+        ordering = ["-creation_date"]

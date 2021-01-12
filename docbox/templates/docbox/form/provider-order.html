@@ -53,6 +53,9 @@
             {% include "docbox/form/field.html" with field=form.price prepend="Сумма:" append="грн." %}
         </div>
     </div>
+    <div class="form-group">
+            {% include "docbox/form/field.html" with field=form.status %}
+        </div>
     <div class="form-row">
         <div class="form-group col">
             {% include "docbox/form/field.html" with field=form.order_content %}
