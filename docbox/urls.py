@@ -36,7 +36,11 @@ docbox_patterns = (
 )
 
 docbox_api_patterns = (
-    [path("balance", api_views.GetBalance.as_view(), name="get-balance")],
+    [
+        path("balance", api_views.GetBalance.as_view(), name="get-balance"),
+        path("provider-order/list", api_views.ListProviderOrders.as_view(), name="list-provider-orders"),
+        path("provider-order/<uuid:pk>/update", api_views.UpdateProviderOrder.as_view(), name="update-provider-order"),
+    ],
     "docbox-api",
 )
 
