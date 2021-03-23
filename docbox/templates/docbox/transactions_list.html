@@ -51,11 +51,11 @@
     <tr>
       <th data-field="date" scope="col" class="border-top-0" data-width="70">Дата</th>
       <th data-field="amount" scope="col" class="border-top-0" data-width="150">Сумма</th>
+      <th data-field="cashbox" scope="col" class="border-top-0" data-width="50">Касса</th>
       <th data-field="client" scope="col" class="border-top-0" data-width="200">Клиент</th>
       <th data-field="provider" scope="col" class="border-top-0"data-width="200">Поставщик</th>
       <th data-field="order" scope="col" class="border-top-0" data-width="200">Заказ</th>
       <th data-field="comment" scope="col" class="border-top-0">Комментарий</th>
-      <th data-field="cashbox" scope="col" class="border-top-0" data-width="50">Касса</th>
       <th data-field="tools" scope="col" class="border-top-0" data-width="50">Действия</th>
     </tr>
   </thead>
@@ -65,6 +65,11 @@
       <td>{{ transaction.date|date:'d.m.y'}}</td>
       <td class="text-right text-nowrap">
         <a class="text-reset" href="{% url 'docbox:edit-transaction' transaction.pk %}">{{ transaction.amount|price }}</a>
+      </td>
+      <td class="text-center">
+      {% if transaction.cashbox %}
+      <i class="fas fa-check"></i>
+      {% endif %}
       </td>
       <td>
         {% if transaction.client %}
@@ -82,11 +87,6 @@
         {% endif %}
       </td>
       <td>{{ transaction.comment }}</td>
-      <td class="text-center">
-      {% if transaction.cashbox %}
-      <i class="fas fa-check"></i>
-      {% endif %}
-      </td>
       <td>
         <a class="text-reset" href="{% url 'docbox:delete-transaction' transaction.pk %}?next={{ request.path }}">
           <span class="fas fa-times fa-fw"></span>
