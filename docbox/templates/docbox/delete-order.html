@@ -1,0 +1,26 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_price %}
+
+{% block tab_title %}
+Удаление заказа {{ object.provider_orders_str }}
+{% endblock tab_title %}
+
+{% block page_header %}
+Удаление заказа {{ object.provider_orders_str }}
+{% endblock page_header %}
+
+{% block content %}
+<div class="container" style="max-width: 768px;">
+    {% if object.deletable %}
+    <p class="text-center"> За локальным заказом № <b>{{ object.provider_orders_str }}</b> не закреплены заказы у поставщиков и отсутствуют транзакции, удалить его?</p>
+    <form method="post">
+    {% csrf_token %}
+    <div class="form-row text-center mb-5">
+        <input type="submit" class="mx-auto mt-5 btn btn-danger" value="Удалить">
+    </div>
+    </form>
+    {% else %}
+    <p class="text-center"> Нельзя удалить заказ № <b>{{ object.provider_orders_str }}</b> так как за ним закреплены заказы у поставщиков или транзакции.</p>
+    {% endif %}
+</div>
+{% endblock content %}

@@ -363,6 +363,12 @@ class Order(models.Model):
             return self.provider_code
         return ", ".join([provider_order.code for provider_order in self.provider_orders])
 
+    @property
+    def deletable(self):
+        if self.provider_orders or self.transactions:
+            return False
+        return True
+
     def __str__(self):
         order = f"{self.client.name}"
         if hasattr(self, "price"):

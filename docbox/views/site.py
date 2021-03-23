@@ -516,6 +516,22 @@ class EditOrder(LoginRequiredMixin, DocboxFormViewBase):
         return context
 
 
+class DeleteOrder(LoginRequiredMixin, DeleteView):
+    template_name = "docbox/delete-order.html"
+    model = Order
+    success_url = "/docbox/orders"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if not self.object.provider_orders and not self.object.transactions:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+
+        return redirect("docbox:delete-order", pk=self.object.pk)
+
+
 class BookkeepingOrders(OrdersList):
     template_name = "docbox/bookkeeping-orders.html"
 

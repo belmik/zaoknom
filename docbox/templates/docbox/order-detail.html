@@ -73,6 +73,15 @@
     {% endif %}
 
 </dl>
+{% if object.deletable %}
+    <form method="post" action="{% url 'docbox:delete-order' object.pk %}">
+    {% csrf_token %}
+    <div class="form-row text-center mb-5">
+        <input type="submit" class="mx-auto mt-5 btn btn-danger" value="Удалить">
+    </div>
+    </form>
+{% endif %}
+
 {% if object.transactions %}
 <div class="row">
 <div class="col-sm-6 offset-sm-3">

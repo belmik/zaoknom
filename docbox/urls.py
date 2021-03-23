@@ -26,6 +26,7 @@ docbox_patterns = (
         path("provider-order/<uuid:pk>/edit", views.EditProviderOrder.as_view(), name="edit-provider-order",),
         path("provider-order/<uuid:pk>/delete", views.DeleteProviderOreder.as_view(), name="delete-provider-order",),
         path("order/<uuid:pk>/edit", views.EditOrder.as_view(), name="order-edit"),
+        path("order/<uuid:pk>/delete", views.DeleteOrder.as_view(), name="delete-order"),
         path("order/new", views.NewOrder.as_view(), name="new-order"),
         path("transactions", views.TransactionList.as_view(), name="transactions-list"),
         path("transaction/new", views.NewTransaction.as_view(), name="new-transaction"),
