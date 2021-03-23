@@ -55,9 +55,9 @@
 
     {% if object.price %}
         {% if object.price.mounting %}
-            <dt class="col-sm-2  offset-sm-3">Cумма с монтажем:</dt>
+            <dt class="col-sm-2  offset-sm-3">Сумма с монтажем:</dt>
         {% else %}
-            <dt class="col-sm-2  offset-sm-3">Cумма:</dt>
+            <dt class="col-sm-2  offset-sm-3">Сумма:</dt>
         {% endif %}
         <dd class="col-sm-4">{{ object.price.total|price }}</dd>
     {% endif %}

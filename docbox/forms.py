@@ -38,8 +38,8 @@ class DocboxFormMixin(object):
     def update_html_attributes(self):
         """Update fields widget html attributes.
 
-        add form-conrol to the class html attribute
-        set autocomplete attruibute to off
+        add form-control to the class html attribute
+        set autocomplete attribute to off
         set placeholder attribute with value of label
         """
 
@@ -227,7 +227,7 @@ class EditOrderForm(NewOrderForm):
         Change client to another or just update his phone.
 
         This form can only change user to another from db or change the phone of existing user.
-        Because if user changed name in the form and this name not in the db it's imposible
+        Because if user changed name in the form and this name not in the db it's impossible
         to know what user trying to do.
         """
         if "name" not in self.changed_data and "phone" not in self.changed_data:

@@ -13,11 +13,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         today = date.today().strftime("%Y%m%d")
-        self.uploda_csv_to_gdrive(Order, f"orders_{today}.csv")
-        self.uploda_csv_to_gdrive(Transaction, f"transactions_{today}.csv")
+        self.upload_csv_to_gdrive(Order, f"orders_{today}.csv")
+        self.upload_csv_to_gdrive(Transaction, f"transactions_{today}.csv")
 
-    def uploda_csv_to_gdrive(self, model, filename):
-        """ Dump all items from model to csv file and upload it to gdrive.
+    def upload_csv_to_gdrive(self, model, filename):
+        """Dump all items from model to csv file and upload it to gdrive.
 
         `model` must have data_for_csv attribute, which is list of values needed for backup.
         """

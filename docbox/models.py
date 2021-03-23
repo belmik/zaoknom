@@ -247,7 +247,7 @@ class Transaction(models.Model):
         return reverse("docbox:edit-transaction", kwargs={"pk": self.pk})
 
     class Meta:
-        verbose_name = "Транзация"
+        verbose_name = "Транзакция"
         verbose_name_plural = "Транзакции"
         ordering = ["-date"]
 
@@ -255,7 +255,7 @@ class Transaction(models.Model):
 class Order(models.Model):
     class Status(models.TextChoices):
         NEW = "new", "новый"
-        WAITING_FOR_PAIMENT = "waiting_for_paiment", "ожидает оплаты"
+        WAITING_FOR_PAYMENT = "waiting_for_payment", "ожидает оплаты"
         IN_PRODUCTION = "in_production", "в работе"
         DELIVERED = "delivered", "доставлен"
         MOUNTED = "mounted", "установлен"

@@ -33,7 +33,7 @@ class NewOrderFormTestCase(BaseTestCase):
         r = self.client.get(reverse("docbox:orders-list"))
         self.assertContains(r, self.valid_data["name"])
 
-    def test_clien_phone_save(self):
+    def test_client_phone_save(self):
         self.client.post(self.form_url, data=self.valid_data)
         r = self.client.get(reverse("docbox:orders-list"))
         self.assertContains(r, "(097) 000 0000")
@@ -43,11 +43,11 @@ class NewOrderFormTestCase(BaseTestCase):
         r = self.client.get(reverse("docbox:orders-list"))
         self.assertContains(r, self.valid_data["town"])
 
-    def test_name_field_requered(self):
+    def test_name_field_required(self):
         r = self.client.post(self.form_url, data={})
         self.assertFormError(r, "form", "name", "Пожалуйста, введите имя заказчика.")
 
-    def test_total_field_requered(self):
+    def test_total_field_required(self):
         r = self.client.post(self.form_url, data={})
         self.assertFormError(r, "form", "total", "Введите сумму заказа.")
 
