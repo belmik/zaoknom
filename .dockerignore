@@ -1,5 +1,4 @@
 *
 !docbox
-!Pipfile
-!Pipfile.lock
 !manage.py
+!requirements.txt

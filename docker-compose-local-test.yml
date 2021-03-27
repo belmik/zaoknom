@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   db:
-    image: postgres
+    image: postgres:12-alpine
     restart: always
     environment:
       - POSTGRES_PASSWORD
@@ -32,7 +32,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./static:/usr/src/app/docbox/static
+      - ./static:/home/app/docbox/static
     depends_on:
       - db
 
