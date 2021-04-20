@@ -13,7 +13,7 @@ repos:
         stages: [commit]
         language: system
         entry: pipenv run black
-        args: [--line-length=95]
+        args: [--line-length=120]
         types: [python]
         exclude: "(urls)|(docbox/migrations/.*).py"
 
