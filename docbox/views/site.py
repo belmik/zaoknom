@@ -278,11 +278,16 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     type_choices = Order.ORDER_TYPE_CHOICES.copy()
     type_choices.append(("all", "все"))
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.search_q = ""
+
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
 
         status = request.POST.get("status", "all")
         order_type = request.POST.get("type", "all")
+        self.search_q = request.POST.get("search_q")
         request.session["status"] = status
         request.session["type"] = order_type
 
@@ -297,6 +302,7 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
         context = super().get_context_data(**kwargs)
         context["selected_status"] = self.status
         context["selected_type"] = self.order_type
+        context["search_q"] = self.search_q
         context["status_choices"] = self.status_choices
         context["type_choices"] = self.type_choices
         return context
@@ -305,6 +311,11 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
 
         queryset = super().get_queryset()
         queryset = queryset.filter(date_created__range=(self.start_date, self.end_date))
+
+        if self.search_q:
+            query = models.Q(providerorder__code__contains=self.search_q)
+            legacy_query = models.Q(provider_code__contains=self.search_q)
+            queryset = queryset.filter(query | legacy_query)
 
         if self.order_type != "all":
             queryset = queryset.filter(category=self.order_type)
