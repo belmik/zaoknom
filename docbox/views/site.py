@@ -42,7 +42,7 @@ class DocboxFormViewBase(FormView):
         return context
 
     def add_error_classes(self, context):
-        """ Add error class to the form fields. """
+        """Add error class to the form fields."""
         form = context["form"]
         if not getattr(form, "errors", False):
             return
@@ -291,7 +291,6 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
     def get(self, request, *args, **kwargs):
         self.status = request.session.get("status", "all")
         self.order_type = request.session.get("type", "all")
-        self.client_pk = self.kwargs.get("client_pk")
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -307,9 +306,6 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
         queryset = super().get_queryset()
         queryset = queryset.filter(date_created__range=(self.start_date, self.end_date))
 
-        if self.client_pk:
-            queryset = queryset.filter(client=self.client_pk)
-
         if self.order_type != "all":
             queryset = queryset.filter(category=self.order_type)
 
@@ -318,6 +314,20 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
 
         if self.status != "all":
             queryset = queryset.filter(status=self.status)
+
+        return queryset
+
+
+class OrdersClient(OrdersList):
+    def get(self, request, *args, **kwargs):
+        self.client_pk = self.kwargs.get("client_pk")
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.client_pk:
+            queryset = queryset.filter(client=self.client_pk)
 
         return queryset
 
@@ -389,9 +399,7 @@ class NewTransaction(LoginRequiredMixin, FormView):
 
     def get_initial(self):
         if isinstance(self.object, Order):
-            self.initial = [
-                {"order": self.object.order_id, "client": self.object.client.client_id}
-            ]
+            self.initial = [{"order": self.object.order_id, "client": self.object.client.client_id}]
         if isinstance(self.object, Client):
             self.initial = [{"client": self.object.pk}]
         return super().get_initial()
