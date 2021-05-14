@@ -15,15 +15,15 @@
   <form method="post">
   {% csrf_token %}
     <div class="form-row align-items-center">
-      <div class="col-auto">
+      <div class="col-sm">
         <div class="input-daterange input-group input-group-sm">
           <div class="input-group-prepend">
-            <span class="input-group-text">Период с:</span>
+            <span class="input-group-text">с:</span>
           </div>
             <input type="text" value="{{ start_date }}" class="input-sm form-control" name="start_date" />
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-sm">
         <div class="input-daterange input-group input-group-sm">
           <div class="input-group-prepend">
             <span class="input-group-text">по:</span>
@@ -31,17 +31,17 @@
             <input type="text" value="{{ end_date }}" class="input-sm form-control" name="end_date" />
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-sm">
         <div class="input-group input-group-sm">
           <input type="text" value="{{ search_q }}" class="input-sm form-control" name="search_q" placeholder="Номер заказа" />
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-sm">
         <div class="form-group form-group-sm mb-0">
           <input type="submit" class="form-control btn btn-sm btn-outline-secondary form-control-sm" value="Поиск" />
         </div>
       </div>
-      <div class="col-auto ml-auto">
+      <div class="col-sm ml-auto">
         <div class="input-group input-group-sm">
           <div class="input-group-prepend">
             <span class="input-group-text">Тип</span>
@@ -53,7 +53,7 @@
           </select>
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-sm">
         <div class="input-group input-group-sm">
           <div class="input-group-prepend">
             <span class="input-group-text">Статус</span>
