@@ -26,6 +26,6 @@ jobs:
       - name: Build and push nginx
         uses: docker/build-push-action@v2
         with:
-          file: nginx/Dockerfile
+          context: ./nginx
           push: true
           tags: ghcr.io/belmik/nginx:latest
