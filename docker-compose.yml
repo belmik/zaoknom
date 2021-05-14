@@ -9,7 +9,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
   web:
-    image: docker.pkg.github.com/belmik/zaoknom/docbox:latest
+    image: ghcr.io/belmik/docbox:latest
     restart: always
     command: gunicorn docbox.wsgi:application --bind 0.0.0.0:8000 --capture-output
     environment:
@@ -33,7 +33,7 @@ services:
     depends_on:
       - db
   nginx:
-    image: docker.pkg.github.com/belmik/zaoknom/nginx:latest
+    image: ghcr.io/belmik/nginx:latest
     restart: always
     environment:
       - TZ=Europe/Kiev
