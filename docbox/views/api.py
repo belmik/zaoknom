@@ -1,9 +1,10 @@
+import json
 import os
 from datetime import date
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -28,8 +29,12 @@ class ApiBaseView(View):
     def dispatch(self, request, *args, **kwargs):
         if self.auth:
             return super().dispatch(request, *args, **kwargs)
-
         return HttpResponseBadRequest()
+
+    def return_errors(self, message=False):
+        if message:
+            self.error_messages.append(message)
+        return JsonResponse({"status": "error", "error_messages": self.error_messages})
 
 
 class GetBalance(ApiBaseView):
@@ -56,46 +61,53 @@ class ListProviderOrders(ApiBaseView):
         return JsonResponse(data)
 
 
-class UpdateProviderOrder(ApiBaseView):
-    def post(self, request, *args, **kwargs):
-        provider_order_uuid = kwargs.get("pk")
+class BulkUpdateProviderOrder(ApiBaseView):
+    def post(self, request, **args):
         try:
-            provider_order = ProviderOrder.objects.get(pk=provider_order_uuid)
-        except ObjectDoesNotExist:
-            return HttpResponseNotFound()
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return self.return_errors("Parametr 'orders' contains not valid json")
 
-        new_status = self.get_new_status(request)
-        new_delivery_date = self.get_delivery_date(request)
+        provider_orders = ProviderOrder.objects.exclude(status="finished")
+        for provider_code, new_info in data.items():
+            try:
+                provider_order = provider_orders.get(code=provider_code)
+            except ObjectDoesNotExist:
+                self.error_messages.append(f"Provider code '{provider_code}' doesn't exist.")
+                continue
+
+            self.update_info(provider_order, new_info)
 
         if self.error_messages:
-            return JsonResponse({"status": "error", "error_messages": self.error_messages})
-
-        if new_status:
-            provider_order.status = new_status
-
-        if new_delivery_date:
-            provider_order.date_delivery = new_delivery_date
-
-        provider_order.save()
+            return self.return_errors()
 
         return JsonResponse({"status": "ok"})
 
-    def get_new_status(self, request):
-        new_status = request.POST.get("status")
-        if new_status and new_status not in Order.Status.values:
-            self.error_messages.append(f"Status '{new_status}' is not defined")
-        return new_status
+    def update_info(self, provider_order, new_info):
+        if "status" in new_info:
+            provider_order = self.update_status(provider_order, new_info)
 
-    def get_delivery_date(self, request):
-        new_delivery_date = False
-        delivery_date_data = request.POST.get("delivery_date")
-        if delivery_date_data:
-            try:
-                new_delivery_date = date.fromisoformat(delivery_date_data)
-            except ValueError:
-                self.error_messages.append("Delivery date expected to be in iso format like 'YYYY-MM-DD'")
+        if "delivery_date" in new_info:
+            provider_order = self.update_delivery_date(provider_order, new_info)
 
-        return new_delivery_date
+        provider_order.save()
+
+    def update_status(self, provider_order, new_info):
+        new_status = new_info.get("status")
+        if new_status in Order.Status.values:
+            provider_order.status = new_status
+        else:
+            self.error_messages.append(f"Status '{new_status}' is not allowed")
+        return provider_order
+
+    def update_delivery_date(self, provider_order, new_info):
+        try:
+            new_delivery_date = date.fromisoformat(new_info["delivery_date"])
+        except ValueError:
+            self.error_messages.append("Delivery date expected to be in iso format like 'YYYY-MM-DD'")
+        else:
+            provider_order.delivery_date = new_delivery_date
+        return provider_order
 
 
 class SearchOrder(ApiBaseView):

@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -11,16 +13,12 @@ class BaseTestCase(TestCase):
         self.client.force_login(self.test_user)
 
         self.total_price = 5000
+        self.provider = Provider.objects.create(name=os.getenv("DEFAULT_PROVIDER", "Тестовый поставщик"))
         client = Client.objects.create(name="Тестовый Заказчик", phone="0990000111")
         client_mounter = Client.objects.create(name="Тестовый монтажник")
         mounter = Mounter.objects.create(name=client_mounter)
-        self.provider = Provider.objects.create(name="Тестовый Поставщик")
-        price = Price.objects.create(
-            total=self.total_price, added_expenses=3500, delivery=100, mounting=400
-        )
-        address = Address.objects.create(
-            town="Тестовый город", street="Тестовая", building="10", apartment="1"
-        )
+        price = Price.objects.create(total=self.total_price, added_expenses=3500, delivery=100, mounting=400)
+        address = Address.objects.create(town="Тестовый город", street="Тестовая", building="10", apartment="1")
 
         self.order = Order.objects.create(
             date_created="2019-11-11",

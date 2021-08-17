@@ -13,9 +13,7 @@ class Client(models.Model):
 
     client_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(verbose_name="Имя", max_length=64)
-    phone = models.CharField(
-        verbose_name="Телефон", blank=True, max_length=10, validators=[validate_phone]
-    )
+    phone = models.CharField(verbose_name="Телефон", blank=True, max_length=10, validators=[validate_phone])
     info = models.TextField(verbose_name="Заметка", max_length=1024, blank=True)
 
     def __str__(self):
@@ -114,12 +112,8 @@ class Address(models.Model):
     ]
 
     address_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    town = models.CharField(
-        verbose_name="Насел. пункт", max_length=64, default="Белгород-Днестровский"
-    )
-    street_type = models.CharField(
-        max_length=16, choices=STREET_TYPES, default="street", blank=True
-    )
+    town = models.CharField(verbose_name="Насел. пункт", max_length=64, default="Белгород-Днестровский")
+    street_type = models.CharField(max_length=16, choices=STREET_TYPES, default="street", blank=True)
     street = models.CharField(verbose_name="Улица", max_length=64, blank=True)
     building = models.CharField(verbose_name="Дом", max_length=8, blank=True)
     apartment = models.PositiveIntegerField(verbose_name="Квартира", blank=True, null=True)
@@ -153,12 +147,8 @@ class Price(models.Model):
         blank=True,
         null=True,
     )
-    delivery = models.DecimalField(
-        verbose_name="Доставка", max_digits=10, decimal_places=0, blank=True, null=True
-    )
-    mounting = models.DecimalField(
-        verbose_name="Монтаж", max_digits=10, decimal_places=0, blank=True, null=True
-    )
+    delivery = models.DecimalField(verbose_name="Доставка", max_digits=10, decimal_places=0, blank=True, null=True)
+    mounting = models.DecimalField(verbose_name="Монтаж", max_digits=10, decimal_places=0, blank=True, null=True)
 
     @property
     def products(self):
@@ -209,16 +199,10 @@ class Transaction(models.Model):
     transaction_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     amount = models.DecimalField(verbose_name="Сумма", max_digits=10, decimal_places=0)
     date = models.DateField(verbose_name="Дата", default=date.today)
-    client = models.ForeignKey(
-        "Client", verbose_name="Клиент", on_delete=models.PROTECT, blank=True, null=True
-    )
-    provider = models.ForeignKey(
-        "Provider", verbose_name="Поставщик", on_delete=models.PROTECT, blank=True, null=True
-    )
+    client = models.ForeignKey("Client", verbose_name="Клиент", on_delete=models.PROTECT, blank=True, null=True)
+    provider = models.ForeignKey("Provider", verbose_name="Поставщик", on_delete=models.PROTECT, blank=True, null=True)
     comment = models.TextField(verbose_name="Комментарий", max_length=1024, blank=True)
-    order = models.ForeignKey(
-        "Order", verbose_name="Заказ", on_delete=models.PROTECT, blank=True, null=True
-    )
+    order = models.ForeignKey("Order", verbose_name="Заказ", on_delete=models.PROTECT, blank=True, null=True)
     cashbox = models.BooleanField(verbose_name="Касса", null=True, default=True)
 
     def __str__(self):
@@ -271,17 +255,11 @@ class Order(models.Model):
     ]
 
     order_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    date_created = models.DateField(
-        verbose_name="Дата оформления", default=date.today, null=True
-    )
+    date_created = models.DateField(verbose_name="Дата оформления", default=date.today, null=True)
     client = models.ForeignKey("Client", verbose_name="Клиент", on_delete=models.PROTECT)
     price = models.OneToOneField("Price", verbose_name="Цены", on_delete=models.CASCADE)
-    address = models.ForeignKey(
-        "Address", verbose_name="Адрес", null=True, on_delete=models.PROTECT, blank=True
-    )
-    mounter = models.ForeignKey(
-        "Mounter", verbose_name="Монтажник", on_delete=models.PROTECT, blank=True, null=True
-    )
+    address = models.ForeignKey("Address", verbose_name="Адрес", null=True, on_delete=models.PROTECT, blank=True)
+    mounter = models.ForeignKey("Mounter", verbose_name="Монтажник", on_delete=models.PROTECT, blank=True, null=True)
     provider = models.ForeignKey(
         "Provider",
         verbose_name="Производитель",
@@ -289,12 +267,8 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
-    provider_code = models.CharField(
-        verbose_name="Производственный номер", max_length=1024, blank=True, default="б/н"
-    )
-    status = models.SlugField(
-        verbose_name="Статус", choices=Status.choices, default="new", blank=True
-    )
+    provider_code = models.CharField(verbose_name="Производственный номер", max_length=1024, blank=True, default="б/н")
+    status = models.SlugField(verbose_name="Статус", choices=Status.choices, default="new", blank=True)
     category = models.SlugField(
         verbose_name="Категория",
         choices=ORDER_TYPE_CHOICES,
@@ -302,15 +276,11 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
-    comment = models.TextField(
-        verbose_name="Комментарий", max_length=1024, blank=True, default="", null=True
-    )
+    comment = models.TextField(verbose_name="Комментарий", max_length=1024, blank=True, default="", null=True)
     date_changed = models.DateField(verbose_name="Изменен", auto_now=True, null=True)
     date_delivery = models.DateField(verbose_name="Дата доставки", blank=True, null=True)
     date_mounting = models.DateField(verbose_name="Дата монтажа", blank=True, null=True)
-    date_finished = models.DateField(
-        verbose_name="Дата закрытия заказа", blank=True, null=True
-    )
+    date_finished = models.DateField(verbose_name="Дата закрытия заказа", blank=True, null=True)
 
     @property
     def remaining(self):
@@ -394,17 +364,11 @@ class ProviderOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Заказ")
     provider = models.ForeignKey(Provider, on_delete=models.PROTECT, verbose_name="Поставщик")
     code = models.CharField(verbose_name="Номер заказа", max_length=16)
-    price = models.DecimalField(
-        verbose_name="Сумма заказа", max_digits=10, decimal_places=0, blank=True, default=0
-    )
-    order_content = models.TextField(
-        verbose_name="Состав заказа", max_length=1024, blank=True, default=""
-    )
+    price = models.DecimalField(verbose_name="Сумма заказа", max_digits=10, decimal_places=0, blank=True, default=0)
+    order_content = models.TextField(verbose_name="Состав заказа", max_length=1024, blank=True, default="")
     creation_date = models.DateTimeField(verbose_name="Дата добавления", default=timezone.now)
     delivery_date = models.DateField(verbose_name="Дата доставки", blank=True, null=True)
-    status = models.SlugField(
-        verbose_name="Статус", choices=Order.Status.choices, default="new", blank=True
-    )
+    status = models.SlugField(verbose_name="Статус", choices=Order.Status.choices, default="new", blank=True)
 
     def __str__(self):
         return self.code
