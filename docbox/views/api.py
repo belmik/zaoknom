@@ -9,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
+from docbox import botclient
 from docbox.models import Order, ProviderOrder, Transaction
 
 
@@ -69,6 +70,7 @@ class BulkUpdateProviderOrder(ApiBaseView):
             return self.return_errors("Parametr 'orders' contains not valid json")
 
         provider_orders = ProviderOrder.objects.exclude(status="finished")
+        self.new_orders_on_delivery = []
         for provider_code, new_info in data.items():
             try:
                 provider_order = provider_orders.get(code=provider_code)
@@ -80,6 +82,9 @@ class BulkUpdateProviderOrder(ApiBaseView):
 
         if self.error_messages:
             return self.return_errors()
+
+        if self.new_orders_on_delivery:
+            botclient.send_delivery_info(self.new_orders_on_delivery)
 
         return JsonResponse({"status": "ok"})
 
@@ -105,8 +110,12 @@ class BulkUpdateProviderOrder(ApiBaseView):
             new_delivery_date = date.fromisoformat(new_info["delivery_date"])
         except ValueError:
             self.error_messages.append("Delivery date expected to be in iso format like 'YYYY-MM-DD'")
-        else:
+            return provider_order
+
+        if provider_order.delivery_date != new_delivery_date:
             provider_order.delivery_date = new_delivery_date
+            self.new_orders_on_delivery.append(provider_order)
+
         return provider_order
 
 
