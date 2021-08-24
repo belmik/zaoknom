@@ -67,7 +67,7 @@ class BulkUpdateProviderOrder(ApiBaseView):
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
-            return self.return_errors("Parametr 'orders' contains not valid json")
+            return self.return_errors("Data should be in a valid json format")
 
         provider_orders = ProviderOrder.objects.exclude(status="finished")
         self.new_orders_on_delivery = []
@@ -80,11 +80,11 @@ class BulkUpdateProviderOrder(ApiBaseView):
 
             self.update_info(provider_order, new_info)
 
-        if self.error_messages:
-            return self.return_errors()
-
         if self.new_orders_on_delivery:
             botclient.send_delivery_info(self.new_orders_on_delivery)
+
+        if self.error_messages:
+            return self.return_errors()
 
         return JsonResponse({"status": "ok"})
 

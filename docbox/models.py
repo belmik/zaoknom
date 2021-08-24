@@ -339,6 +339,14 @@ class Order(models.Model):
             return False
         return True
 
+    def get_provider_orders_statuses(self):
+        if not self.provider_orders:
+            return False
+        statuses = set()
+        for provider_order in self.provider_orders:
+            statuses.add(provider_order.status)
+        return statuses
+
     def __str__(self):
         order = f"{self.client.name}"
         if hasattr(self, "price"):
