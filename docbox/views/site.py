@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
 from django.utils import formats
@@ -151,11 +152,6 @@ class ProvidersList(LoginRequiredMixin, ListView):
     model = Provider
 
 
-class ProviderDetail(LoginRequiredMixin, DetailView):
-    template_name = "docbox/provider-detail.html"
-    model = Provider
-
-
 class EditProvider(LoginRequiredMixin, DocboxFormViewBase, UpdateView):
     template_name = "docbox/edit-provider.html"
     form_class = ProviderForm
@@ -173,6 +169,22 @@ class NewProvider(LoginRequiredMixin, DocboxFormViewBase):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class DeleteProvider(LoginRequiredMixin, DeleteView):
+    template_name = "docbox/delete-provider.html"
+    model = Provider
+    success_url = "/docbox/providers"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.deletable:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+
+        return redirect("docbox:delete-provider", pk=self.object.pk)
 
 
 class NewProviderOrder(LoginRequiredMixin, DocboxFormViewBase):
@@ -327,6 +339,33 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
             queryset = queryset.filter(status=self.status)
 
         return queryset
+
+
+class ProviderDetail(OrdersList):
+    template_name = "docbox/provider-detail.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.provider = Provider.objects.get(pk=self.kwargs.get("pk"))
+        except Provider.DoesNotExist:
+            return HttpResponseNotFound()
+
+        if self.provider.deletable:
+            return redirect("docbox:delete-provider", pk=self.provider.pk)
+
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.provider:
+            queryset = queryset.filter(providerorder__provider=self.provider)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["provider"] = self.provider
+        return context
 
 
 class OrdersClient(OrdersList):

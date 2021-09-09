@@ -1,17 +1,15 @@
-{% extends 'docbox/base.html' %}
+{% extends 'docbox/orders-list.html' %}
 
 
 {% block tab_title %}
-{{ object.name }}
+{{ provider.name }}
 {% endblock tab_title %}
 
 {% block page_header %}
-{{ object.name }}
-<a class="text-reset" style="font-size:1.2rem;" href="{{ object.get_absolute_edit_url }}">
+{{ provider.name }}
+<a class="text-reset" style="font-size:1.2rem;" href="{{ provider.get_absolute_edit_url }}">
   <span class="fas fa-pen fa-fw"></span>
 </a>
 {% endblock page_header %}
 
-{% block content %}
 
-{% endblock content %}

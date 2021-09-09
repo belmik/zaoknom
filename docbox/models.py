@@ -95,6 +95,12 @@ class Provider(models.Model):
     def get_absolute_edit_url(self):
         return reverse("docbox:provider-edit", kwargs={"pk": self.pk})
 
+    @property
+    def deletable(self):
+        if self.providerorder_set.count() or self.order_set.count() or self.transaction_set.count():
+            return False
+        return True
+
     class Meta:
         verbose_name = "Поставщик"
         verbose_name_plural = "Поставщики"

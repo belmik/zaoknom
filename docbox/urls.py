@@ -16,6 +16,7 @@ docbox_patterns = (
         path("provider/new", views.NewProvider.as_view(), name="new-provider"),
         path("provider/<uuid:pk>", views.ProviderDetail.as_view(), name="provider-detail"),
         path("provider/<uuid:pk>/edit", views.EditProvider.as_view(), name="provider-edit"),
+        path("provider/<uuid:pk>/delete", views.DeleteProvider.as_view(), name="delete-provider"),
         path("orders", views.OrdersList.as_view(), name="orders-list"),
         path("orders/export", views.CsvExport.as_view(), name="export-csv"),
         path("orders/client/<uuid:client_pk>/", views.OrdersClient.as_view(), name="client-orders-list"),
@@ -40,7 +41,9 @@ docbox_api_patterns = (
     [
         path("balance", api_views.GetBalance.as_view(), name="get-balance"),
         path("provider-order/list", api_views.ListProviderOrders.as_view(), name="list-provider-orders"),
-        path("provider-order/bulk-update", api_views.BulkUpdateProviderOrder.as_view(), name="bulk-update-provider-order"),
+        path(
+            "provider-order/bulk-update", api_views.BulkUpdateProviderOrder.as_view(), name="bulk-update-provider-order"
+        ),
         path("search-order", api_views.SearchOrder.as_view(), name="search-order"),
     ],
     "docbox-api",
