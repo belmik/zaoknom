@@ -101,6 +101,10 @@ class Provider(models.Model):
             return False
         return True
 
+    @property
+    def pk_str(self):
+        return str(self.pk)
+
     class Meta:
         verbose_name = "Поставщик"
         verbose_name_plural = "Поставщики"

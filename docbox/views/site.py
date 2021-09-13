@@ -393,20 +393,28 @@ class TransactionList(LoginRequiredMixin, DocboxListViewBase):
 
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
+        request.session["provider"] = request.POST.get("provider", "all")
         return self.get(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.provider = request.session.get("provider", "all")
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         cashbox_sum = Transaction.objects.filter(cashbox=True).aggregate(models.Sum("amount"))
         context["cashbox_sum"] = cashbox_sum.get("amount__sum", 0)
+        context["providers"] = Provider.objects.all()
+        context["selected_provider"] = self.provider
 
         return context
 
     def get_queryset(self):
-
         queryset = super().get_queryset()
         queryset = queryset.filter(date__range=(self.start_date, self.end_date))
+        if self.provider != "all":
+            queryset = queryset.filter(provider__pk=self.provider)
         return queryset
 
 

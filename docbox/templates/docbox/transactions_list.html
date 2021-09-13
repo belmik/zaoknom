@@ -35,6 +35,19 @@
           <input type="submit" class="form-control btn btn-sm btn-outline-secondary form-control-sm" value="Применить" />
         </div>
       </div>
+      <div class="col-sm-3">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text">поставщик</span>
+          </div>
+          <select id="provider" name="provider" class="custom-select custom-select-sm form-control">
+            {% for provider in providers %}
+              <option value="{{ provider.pk }}"{% if provider.pk_str == selected_provider %} selected{% endif %}>{{ provider.name }}</option>
+            {% endfor %}
+              <option value="all"{% if "all" == selected_provider %} selected{% endif %}>Все</option>
+          </select>
+        </div>
+      </div>
     </div>
   </form>
   <dl class="row mt-3 mb-0">
@@ -131,6 +144,9 @@
     daysOfWeekHighlighted: "0,6",
     todayHighlight: true,
     toggleActive: true
+  });
+  $("#provider").change(function(){
+    $("#toolbar form").submit();
   });
 </script>
 {% endblock scripts %}
