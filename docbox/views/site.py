@@ -391,9 +391,14 @@ class TransactionList(LoginRequiredMixin, DocboxListViewBase):
     template_name = "docbox/transactions_list.html"
     model = Transaction
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.search_q = ""
+
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs)
         request.session["provider"] = request.POST.get("provider", "all")
+        self.search_q = request.POST.get("search_q")
         return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -407,6 +412,7 @@ class TransactionList(LoginRequiredMixin, DocboxListViewBase):
         context["cashbox_sum"] = cashbox_sum.get("amount__sum", 0)
         context["providers"] = Provider.objects.all()
         context["selected_provider"] = self.provider
+        context["search_q"] = self.search_q
 
         return context
 
@@ -415,6 +421,10 @@ class TransactionList(LoginRequiredMixin, DocboxListViewBase):
         queryset = queryset.filter(date__range=(self.start_date, self.end_date))
         if self.provider != "all":
             queryset = queryset.filter(provider__pk=self.provider)
+
+        if self.search_q:
+            queryset = queryset.filter(comment__contains=self.search_q)
+
         return queryset
 
 
