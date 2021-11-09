@@ -90,33 +90,31 @@ class BulkUpdateProviderOrder(ApiBaseView):
 
     def update_info(self, provider_order, new_info):
         if "status" in new_info:
-            provider_order = self.update_status(provider_order, new_info)
+            self.update_status(provider_order, new_info)
 
         if "delivery_date" in new_info:
-            provider_order = self.update_delivery_date(provider_order, new_info)
+            self.update_delivery_date(provider_order, new_info)
 
-        provider_order.save()
 
     def update_status(self, provider_order, new_info):
         new_status = new_info.get("status")
-        if new_status in Order.Status.values:
+        if new_status in Order.Status.values and new_status != provider_order.status:
             provider_order.status = new_status
+            provider_order.save()
         else:
             self.error_messages.append(f"Status '{new_status}' is not allowed")
-        return provider_order
 
+    
     def update_delivery_date(self, provider_order, new_info):
         try:
             new_delivery_date = date.fromisoformat(new_info["delivery_date"])
         except ValueError:
             self.error_messages.append("Delivery date expected to be in iso format like 'YYYY-MM-DD'")
-            return provider_order
 
         if provider_order.delivery_date != new_delivery_date:
             provider_order.delivery_date = new_delivery_date
+            provider_order.save()
             self.new_orders_on_delivery.append(provider_order)
-
-        return provider_order
 
 
 class SearchOrder(ApiBaseView):
