@@ -28,7 +28,7 @@ class Client(models.Model):
 
     @property
     def last_orders(self):
-        return self.client_orders[:15]
+        return self.client_orders.order_by("-date_created")[:15]
 
     @property
     def last_transactions(self):
