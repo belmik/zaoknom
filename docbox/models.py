@@ -27,12 +27,8 @@ class Client(models.Model):
         return self.transaction_set.all()
 
     @property
-    def orders(self):
-        return self.order_set.all()
-
-    @property
     def last_orders(self):
-        return self.orders[:15]
+        return self.client_orders[:15]
 
     @property
     def last_transactions(self):
@@ -46,13 +42,49 @@ class Client(models.Model):
 
     @property
     def orders_sum(self):
-        if self.orders:
-            return self.orders.aggregate(models.Sum("price__total"))["price__total__sum"]
+        if self.client_orders:
+            return self.client_orders.aggregate(models.Sum("price__total"))["price__total__sum"]
         return 0
 
     @property
     def remaining(self):
         return self.orders_sum - self.transactions_sum
+
+    @property
+    def products_price(self):
+        orders_price = self.client_orders.aggregate(sum=models.Sum("price__total"))["sum"]
+        mounting_price = self.client_orders.aggregate(sum=models.Sum("price__mounting"))["sum"]
+        delivery_price = self.client_orders.aggregate(sum=models.Sum("price__delivery"))["sum"]
+        if mounting_price:
+            orders_price -= mounting_price
+        if delivery_price:
+            orders_price -= delivery_price
+        return orders_price
+
+    @property
+    def provider_orders_price(self):
+        return self.client_orders.aggregate(sum=models.Sum("providerorder__price"))["sum"] or 0
+
+    @property
+    def orders_added_expenses_sum(self):
+        return self.client_orders.aggregate(sum=models.Sum("price__added_expenses"))["sum"] or 0
+
+    @property
+    def expenses(self):
+        return self.provider_orders_price + self.orders_added_expenses_sum
+
+    @property
+    def profit(self):
+        if self.expenses:
+            return self.products_price - self.expenses
+        return 0
+
+    @property
+    def extra_charge(self):
+        if self.profit:
+            extra_charge_percents = self.profit / self.expenses * 100
+            return extra_charge_percents.quantize(0, rounding=ROUND_HALF_UP)
+        return 0
 
     def get_absolute_url(self):
         return reverse("docbox:client-detail", kwargs={"pk": self.pk})
@@ -266,7 +298,7 @@ class Order(models.Model):
 
     order_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     date_created = models.DateField(verbose_name="Дата оформления", default=date.today, null=True)
-    client = models.ForeignKey("Client", verbose_name="Клиент", on_delete=models.PROTECT)
+    client = models.ForeignKey("Client", related_name="client_orders", verbose_name="Клиент", on_delete=models.PROTECT)
     price = models.OneToOneField("Price", verbose_name="Цены", on_delete=models.CASCADE)
     address = models.ForeignKey("Address", verbose_name="Адрес", null=True, on_delete=models.PROTECT, blank=True)
     mounter = models.ForeignKey("Mounter", verbose_name="Монтажник", on_delete=models.PROTECT, blank=True, null=True)

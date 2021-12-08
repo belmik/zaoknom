@@ -5,7 +5,8 @@ from datetime import date, datetime, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.db.models import Q, Sum
+from django.db.models.query import Prefetch
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http.response import HttpResponseNotFound
 from django.shortcuts import redirect
@@ -108,7 +109,7 @@ class ClientDetail(LoginRequiredMixin, DetailView):
     model = Client
 
     def render_to_response(self, context, **response_kwargs):
-        if not self.object.orders and not self.object.transactions:
+        if not self.object.client_orders and not self.object.transactions:
             return redirect("docbox:delete-client", pk=self.object.pk)
 
         return super().render_to_response(context, **response_kwargs)
@@ -131,7 +132,7 @@ class DeleteClient(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if not self.object.orders and not self.object.transactions:
+        if not self.object.client_orders and not self.object.transactions:
             context["client_clean"] = True
 
         return context
@@ -139,7 +140,7 @@ class DeleteClient(LoginRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if not self.object.orders and not self.object.transactions:
+        if not self.object.client_orders and not self.object.transactions:
             success_url = self.get_success_url()
             self.object.delete()
             return HttpResponseRedirect(success_url)
@@ -325,8 +326,8 @@ class OrdersList(LoginRequiredMixin, DocboxListViewBase):
         queryset = queryset.filter(date_created__range=(self.start_date, self.end_date))
 
         if self.search_q:
-            query = models.Q(providerorder__code__contains=self.search_q)
-            legacy_query = models.Q(provider_code__contains=self.search_q)
+            query = Q(providerorder__code__contains=self.search_q)
+            legacy_query = Q(provider_code__contains=self.search_q)
             queryset = queryset.filter(query | legacy_query)
 
         if self.order_type != "all":
@@ -408,7 +409,7 @@ class TransactionList(LoginRequiredMixin, DocboxListViewBase):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        cashbox_sum = Transaction.objects.filter(cashbox=True).aggregate(models.Sum("amount"))
+        cashbox_sum = Transaction.objects.filter(cashbox=True).aggregate(Sum("amount"))
         context["cashbox_sum"] = cashbox_sum.get("amount__sum", 0)
         context["providers"] = Provider.objects.all()
         context["selected_provider"] = self.provider
@@ -623,6 +624,32 @@ class BookkeepingOrders(OrdersList):
             context["total_profit"] += order.price.profit
 
         return context
+
+
+class BookkeepingClients(LoginRequiredMixin, DocboxListViewBase):
+    template_name = "docbox/bookkeeping-clients.html"
+    model = Client
+
+    def post(self, request, *args, **kwargs):
+        super().post(request, *args, **kwargs)
+
+        return self.get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        clients = super().get_queryset()
+        queryset = (
+            clients.filter(client_orders__date_created__range=(self.start_date, self.end_date))
+            .distinct()
+            .prefetch_related(
+                Prefetch("client_orders", Order.objects.filter(date_created__range=(self.start_date, self.end_date)))
+            )
+        )
+
+        return sorted(
+            queryset,
+            key=lambda client: client.profit,
+            reverse=True,
+        )
 
 
 class BookkeepingEditOrder(LoginRequiredMixin, DocboxFormViewBase):

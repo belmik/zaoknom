@@ -21,6 +21,7 @@ docbox_patterns = (
         path("orders/export", views.CsvExport.as_view(), name="export-csv"),
         path("orders/client/<uuid:client_pk>/", views.OrdersClient.as_view(), name="client-orders-list"),
         path("bookkeeping/orders", views.BookkeepingOrders.as_view(), name="bookkeeping-orders"),
+        path("bookkeeping/clients", views.BookkeepingClients.as_view(), name="bookkeeping-clients"),
         path("bookkeeping/order/<uuid:pk>/edit", views.BookkeepingEditOrder.as_view(), name="bookkeeping-order-edit"),
         path("order/<uuid:pk>", views.OrderDetail.as_view(), name="order-detail"),
         path("order/<uuid:pk>/new-provider-order", views.NewProviderOrder.as_view(), name="new-provider-order"),

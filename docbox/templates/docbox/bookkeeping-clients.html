@@ -1,0 +1,111 @@
+{% extends 'docbox/base.html' %}
+{% load docbox_price %}
+{% load docbox_phone %}
+
+{% block tab_title %}
+Бухгалтерия, отчет по клиентам
+{% endblock tab_title %}
+
+{% block page_header %}
+Отчет по клиентам
+{% endblock page_header %}
+
+{% block content %}
+<div id="toolbar">
+  <form method="post">
+  {% csrf_token %}
+    <div class="form-row align-items-center">
+      <div class="col-auto">
+        <div class="input-daterange input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Период с:</span>
+          </div>
+            <input type="text" value="{{ start_date }}" class="input-sm form-control" name="start_date" />
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="input-daterange input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text">по:</span>
+          </div>
+            <input type="text" value="{{ end_date }}" class="input-sm form-control" name="end_date" />
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="form-group form-group-sm mb-0">
+          <input type="submit" class="form-control btn btn-sm btn-outline-secondary form-control-sm" value="Применить" />
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<table class="table table-hover" 
+  data-toggle="table"
+  data-classes="table table-hover table-sm table-bordered"
+  data-locale="ru-RU"
+  >
+  <thead>
+    <tr>
+      <th data-field="client" scope="col" class="border-top-0">Клиент</th>
+      <th data-field="price" scope="col" class="border-top-0">Цена изделий</th>
+      <th data-field="provider_price" scope="col" class="border-top-0">Цена поставщика</th>
+      <th data-field="added_expenses" scope="col" class="border-top-0">Доп. расходы</th>
+      <th data-field="profit" scope="col" class="border-top-0">Прибыль</th>
+      <th data-field="extra_charge" scope="col" class="border-top-0">Наценка</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for client in object_list %}
+    <tr>
+      <td>
+        <a class="text-reset" href="{% url 'docbox:client-detail' client.pk %}">
+          {{ client.name }} {% if client.phone %} {{ client.phone|phone }}{% endif %}
+        </a>
+      </td>
+      <td class="text-right text-nowrap">{{ client.products_price|price }}</td>
+      <td class="text-right text-nowrap">{{ client.provider_orders_price|price }}</td>
+      <td class="text-right text-nowrap">{{ client.orders_added_expenses_sum|price }}</td>
+      <td class="text-right text-nowrap">{{ client.profit|price }}</td>
+      <td class="text-right text-nowrap">{{ client.extra_charge }}%</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if is_paginated %}
+<nav class="mt-3">
+  <ul class="pagination justify-content-center">
+
+
+    {% for page in paginator.page_range %}
+    {% if page != page_obj.number %}
+    <li class="page-item">
+      <a class="page-link text-reset" href="?page={{ page }}">{{page}}</a>
+    </li>
+    {% else %}
+    <li class="page-item active">
+      <span class="page-link text-light bg-secondary border-secondary">
+        {{page}}
+      </span>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+  </ul>
+</nav>
+{% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  $('#toolbar .input-daterange').datepicker({
+    startView: 1,
+    minViewMode: 1,
+    language: "ru",
+    daysOfWeekHighlighted: "0,6",
+    todayHighlight: true,
+    toggleActive: true
+  });
+</script>
+{% endblock scripts %}
