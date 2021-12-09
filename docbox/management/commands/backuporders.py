@@ -8,6 +8,24 @@ from docbox.models import Order, Transaction
 from ._gdrive import upload_file
 
 
+class BookkeepingOrdersCSV(Order):
+    @property
+    def data_for_csv(self):
+        data = [
+            self.date_created,
+            self.provider_orders_str,
+            self.client.name,
+            self.get_status_display(),
+            self.price.products,
+            self.price.provider_orders_price,
+            self.price.added_expenses,
+            self.price.profit,
+            self.price.extra_charge,
+        ]
+
+        return data
+
+
 class Command(BaseCommand):
     help = "Make backup and upload it to google-drive"
 
@@ -15,6 +33,7 @@ class Command(BaseCommand):
         today = date.today().strftime("%Y%m%d")
         self.upload_csv_to_gdrive(Order, f"orders_{today}.csv")
         self.upload_csv_to_gdrive(Transaction, f"transactions_{today}.csv")
+        self.upload_csv_to_gdrive(BookkeepingOrdersCSV, f"BookkeepingOrders_{today}.csv")
 
     def upload_csv_to_gdrive(self, model, filename):
         """Dump all items from model to csv file and upload it to gdrive.
