@@ -5,14 +5,15 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-BOT_SEND_MESSAGE_URL = os.getenv("BOT_SEND_MESSAGE_URL")
+TELEGRAM_SEND_MESSAGE_URL = os.getenv("TELEGRAM_SEND_MESSAGE_URL")
+TELEGRAM_ZAOKNOM_CHAT_ID = os.getenv("TELEGRAM_ZAOKNOM_CHAT_ID")
 
 
 def send_delivery_info(orders: list) -> None:
     grouped_orders = group_orders_by_delivery_date(orders)
     messages = create_delivery_messages(grouped_orders)
-    send_message_to_bot(messages)
+    for message in messages:
+        send_message_to_bot(message)
 
 
 def group_orders_by_delivery_date(orders):
@@ -38,14 +39,9 @@ def create_delivery_messages(grouped_orders):
     return messages
 
 
-def send_message_to_bot(data):
-    if not BOT_TOKEN or not BOT_SEND_MESSAGE_URL:
-        logger.error("Can't send message to the bot because environment var BOT_TOKEN or BOT_SEND_MESSAGE_URL not set")
-        return False
-
-    auth_header = {"Authorization": "Bearer " + BOT_TOKEN}
+def send_message_to_bot(message):
     try:
-        requests.post(BOT_SEND_MESSAGE_URL, json=data, headers=auth_header, timeout=5)
+        requests.post(TELEGRAM_SEND_MESSAGE_URL, json={"chat_id": TELEGRAM_ZAOKNOM_CHAT_ID, "text": message}, timeout=5)
     except Exception as e:
         logger.error(f"Got error during request to the bot: {e}")
         return False
