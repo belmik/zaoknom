@@ -1,3 +1,5 @@
+import codecs
+import csv
 import io
 from datetime import date
 
@@ -8,43 +10,33 @@ from docbox.models import Order, Transaction
 from ._gdrive import upload_file
 
 
-class BookkeepingOrdersCSV(Order):
-    @property
-    def data_for_csv(self):
-        data = [
-            self.date_created,
-            self.provider_orders_str,
-            self.client.name,
-            self.get_status_display(),
-            self.price.products,
-            self.price.provider_orders_price,
-            self.price.added_expenses,
-            self.price.profit,
-            self.price.extra_charge,
-        ]
-
-        return data
-
-
 class Command(BaseCommand):
     help = "Make backup and upload it to google-drive"
 
     def handle(self, *args, **options):
         today = date.today().strftime("%Y%m%d")
-        self.upload_csv_to_gdrive(Order, f"orders_{today}.csv")
-        self.upload_csv_to_gdrive(Transaction, f"transactions_{today}.csv")
-        self.upload_csv_to_gdrive(BookkeepingOrdersCSV, f"BookkeepingOrders_{today}.csv")
+        self.upload_csv_to_gdrive(Order, "data_for_csv", f"orders_{today}.csv")
+        self.upload_csv_to_gdrive(Transaction, "data_for_csv", f"transactions_{today}.csv")
+        self.upload_csv_to_gdrive(Order, "bookkeeping_data_for_csv", f"BookkeepingOrders_{today}.csv")
 
-    def upload_csv_to_gdrive(self, model, filename):
+    def upload_csv_to_gdrive(self, model, csv_dict, filename):
         """Dump all items from model to csv file and upload it to gdrive.
 
         `model` must have data_for_csv attribute, which is list of values needed for backup.
         """
-        csv_file_obj = io.BytesIO()
-        for item in model.objects.all():
-            csv_line = ";".join(map(str, item.data_for_csv))
-            csv_line += "\n"
-            csv_file_obj.write(bytes(csv_line, "utf=8"))
+        with io.BytesIO() as csv_file_obj:
 
-        id, name, size = upload_file(filename, csv_file_obj, "text/csv")
+            # Need to do this because googleapiclient accepts only bytes objects,
+            # and csv module only works with text objects
+            wrapper = codecs.getwriter("utf-8")
+            csv_file_obj_wraper = wrapper(csv_file_obj)
+
+            csv_fieldnames = getattr(model.objects.first(), csv_dict).keys()
+            writer = csv.DictWriter(csv_file_obj_wraper, fieldnames=csv_fieldnames)
+            writer.writeheader()
+            for item in model.objects.all():
+                writer.writerow(getattr(item, csv_dict))
+
+            id, name, size = upload_file(filename, csv_file_obj, "text/csv")
+
         self.stdout.write(f"File {name} ({size} bytes) uploaded to gdrive with id: '{id}'")

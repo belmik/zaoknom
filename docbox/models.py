@@ -252,20 +252,20 @@ class Transaction(models.Model):
 
     @property
     def data_for_csv(self):
-        cashbox = "y" if self.cashbox else "n"
+        cashbox = "да" if self.cashbox else "нет"
         client = self.client.name if self.client else ""
         provider = self.provider.name if self.provider else ""
         order = self.order.provider_orders_str if self.order else ""
 
-        data = [
-            cashbox,
-            self.date,
-            self.amount,
-            client,
-            provider,
-            order,
-            self.comment,
-        ]
+        data = {
+            "Касса": cashbox,
+            "Дата": self.date,
+            "Сумма": self.amount,
+            "Клиент": client,
+            "Поставщик": provider,
+            "Заказ": order,
+            "Комментарий": self.comment,
+        }
 
         return data
 
@@ -342,26 +342,33 @@ class Order(models.Model):
 
     @property
     def data_for_csv(self):
-        data = [
-            self.date_created,
-            self.provider_orders_str,
-            self.get_status_display(),
-            self.client.name,
-            self.address,
-            (self.client.phone or ""),
-            getattr(self.mounter, "name", ""),
-            (self.price.mounting or 0),
-            self.price.total - (self.price.mounting or 0),
-        ]
-        for transaction in self.transactions:
-            data.append(transaction.amount)
-            data.append(transaction.date)
+        data = {
+            "Дата создания": self.date_created,
+            "Номера заводских заказов": self.provider_orders_str,
+            "Статус": self.get_status_display(),
+            "Клиент": self.client.name,
+            "Адрес": self.address,
+            "Телефон": (self.client.phone or ""),
+            "Монтажник": getattr(self.mounter, "name", ""),
+            "Сумма монтажа": (self.price.mounting or 0),
+            "Цена без монтажа": self.price.total - (self.price.mounting or 0),
+        }
 
-        trans_number = len(self.transactions)
-        fillers = 5 - trans_number
-        for i in range(fillers):
-            data.append("")
-            data.append("")
+        return data
+
+    @property
+    def bookkeeping_data_for_csv(self):
+        data = {
+            "Дата создания": self.date_created,
+            "Номера заводских заказов": self.provider_orders_str,
+            "Клиент": self.client.name,
+            "Статус": self.get_status_display(),
+            "Цена изделий": self.price.products,
+            "Цена поставщика": self.price.provider_orders_price,
+            "Дополнительные расходы": (self.price.added_expenses or 0),
+            "Прибыль": self.price.profit,
+            "Наценка": self.price.extra_charge,
+        }
 
         return data
 
