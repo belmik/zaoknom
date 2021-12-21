@@ -1,6 +1,7 @@
 import json
 import os
-from datetime import date
+from datetime import date, timedelta
+from decimal import Decimal, InvalidOperation
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -68,8 +69,8 @@ class BulkUpdateProviderOrder(ApiBaseView):
             data = json.loads(request.body)
         except json.JSONDecodeError:
             return self.return_errors("Data should be in a valid json format")
-
-        provider_orders = ProviderOrder.objects.exclude(status="finished")
+        six_month_ago = date.today() - timedelta(days=180)
+        provider_orders = ProviderOrder.objects.filter(creation_date__gt=six_month_ago)
         self.new_orders_on_delivery = []
         for provider_code, new_info in data.items():
             try:
@@ -95,6 +96,8 @@ class BulkUpdateProviderOrder(ApiBaseView):
         if "delivery_date" in new_info:
             self.update_delivery_date(provider_order, new_info)
 
+        if "price" in new_info:
+            self.check_price(provider_order, new_info)
 
     def update_status(self, provider_order, new_info):
         new_status = new_info.get("status")
@@ -104,17 +107,30 @@ class BulkUpdateProviderOrder(ApiBaseView):
         else:
             self.error_messages.append(f"Status '{new_status}' is not allowed")
 
-    
     def update_delivery_date(self, provider_order, new_info):
         try:
             new_delivery_date = date.fromisoformat(new_info["delivery_date"])
-        except ValueError:
+        except (ValueError, TypeError):
             self.error_messages.append("Delivery date expected to be in iso format like 'YYYY-MM-DD'")
+            return None
 
         if provider_order.delivery_date != new_delivery_date:
             provider_order.delivery_date = new_delivery_date
             provider_order.save()
             self.new_orders_on_delivery.append(provider_order)
+
+    def check_price(self, provider_order, new_info):
+        try:
+            new_price = Decimal(new_info["price"])
+        except InvalidOperation:
+            self.error_messages.append("Price should be valid value python Decimal constructor.")
+            return None
+        difference = provider_order.price - new_price
+        if difference.copy_abs() > Decimal(10):
+            botclient.tbot_client.send_message_to_bot(
+                f"Сумма заказа {provider_order.code} {provider_order.price} грн. "
+                f"более чем на 10 грн. не совпадает с заводской {new_price}"
+            )
 
 
 class SearchOrder(ApiBaseView):
