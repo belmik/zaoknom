@@ -30,6 +30,8 @@ services:
       - GOOGLE_SERVICE_ACCOUNT_CREDS
       - GDRIVE_BACKUP_FOLDER_ID
       - DEFAULT_PROVIDER
+      - TELEGRAM_SEND_MESSAGE_URL
+      - TELEGRAM_ZAOKNOM_CHAT_ID
     depends_on:
       - db
   nginx:
@@ -48,4 +50,4 @@ services:
     volumes:
       - /etc/ssl:/etc/nginx/ssl
 volumes:
-  db:
+  db: null
