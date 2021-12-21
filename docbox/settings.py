@@ -144,3 +144,6 @@ LOGGING = {
         "django.server": {"handlers": ["django.server"], "level": "INFO", "propagate": False},
     },
 }
+
+TELEGRAM_SEND_MESSAGE_URL = os.getenv("TELEGRAM_SEND_MESSAGE_URL")
+TELEGRAM_ZAOKNOM_CHAT_ID = os.getenv("TELEGRAM_ZAOKNOM_CHAT_ID")

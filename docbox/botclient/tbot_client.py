@@ -1,12 +1,9 @@
 import logging
-import os
 
 import requests
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
-
-TELEGRAM_SEND_MESSAGE_URL = os.getenv("TELEGRAM_SEND_MESSAGE_URL")
-TELEGRAM_ZAOKNOM_CHAT_ID = os.getenv("TELEGRAM_ZAOKNOM_CHAT_ID")
 
 
 def send_delivery_info(orders: list) -> None:
@@ -41,7 +38,11 @@ def create_delivery_messages(grouped_orders):
 
 def send_message_to_bot(message):
     try:
-        requests.post(TELEGRAM_SEND_MESSAGE_URL, json={"chat_id": TELEGRAM_ZAOKNOM_CHAT_ID, "text": message}, timeout=5)
+        requests.post(
+            settings.TELEGRAM_SEND_MESSAGE_URL,
+            json={"chat_id": settings.TELEGRAM_ZAOKNOM_CHAT_ID, "text": message},
+            timeout=5,
+        )
     except Exception as e:
         logger.error(f"Got error during request to the bot: {e}")
         return False

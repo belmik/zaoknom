@@ -1,5 +1,6 @@
 import os
 
+from django.test import override_settings
 from django.urls import reverse
 
 from docbox.models import ProviderOrder
@@ -18,6 +19,7 @@ class BulkUpdateProviderOrderCase(BaseTestCase):
         self.order2 = ProviderOrder.objects.create(order=self.order, provider=self.provider, code="322002", price=3000)
         self.order3 = ProviderOrder.objects.create(order=self.order, provider=self.provider, code="322003", price=4000)
 
+    @override_settings(TELEGRAM_SEND_MESSAGE_URL="")
     def test_bulk_udate(self):
         data = {
             self.order1.code: {"delivery_date": "2021-07-11"},
