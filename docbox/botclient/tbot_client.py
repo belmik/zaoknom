@@ -29,8 +29,9 @@ def create_delivery_messages(grouped_orders):
     for delivery_date, orders_list in grouped_orders.items():
         message = f"Доставка {delivery_date.isoformat()}\n\n\n"
         for provider_order in orders_list:
-            message += f"{provider_order.code}: {provider_order.order.client.name}\n"
-            message += f"{provider_order.order_content}\n\n"
+            message += f"**{provider_order.code}**: {provider_order.order.client.name}\n"
+            message += f"{provider_order.order_content}\n"
+            message += f"долг клиента: {provider_order.order.client.remaining}\n\n"
             messages.append(message)
 
     return messages
