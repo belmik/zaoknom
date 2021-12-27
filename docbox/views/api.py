@@ -127,7 +127,7 @@ class BulkUpdateProviderOrder(ApiBaseView):
             return None
         difference = provider_order.price - new_price
         if difference.copy_abs() > Decimal(10):
-            botclient.tbot_client.send_message_to_bot(
+            self.error_messages.append(
                 f"Сумма заказа {provider_order.code} {provider_order.price} грн. "
                 f"более чем на 10 грн. не совпадает с заводской {new_price}"
             )
