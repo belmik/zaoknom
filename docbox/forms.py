@@ -102,9 +102,7 @@ class NewOrderForm(DocboxFormMixin, Form):
         required=False,
         widget=TextInput({"class": "text-right"}),
     )
-    comment = CharField(
-        label="Комментарий", max_length=1024, required=False, widget=Textarea({"rows": 3})
-    )
+    comment = CharField(label="Комментарий", max_length=1024, required=False, widget=Textarea({"rows": 3}))
 
     def save(self):
         data = self.cleaned_data
@@ -120,14 +118,10 @@ class NewOrderForm(DocboxFormMixin, Form):
 
         price = Price.objects.create(total=data["total"])
 
-        order = Order.objects.create(
-            client=client, address=address, price=price, comment=data["comment"]
-        )
+        order = Order.objects.create(client=client, address=address, price=price, comment=data["comment"])
 
         if data["advance_amount"]:
-            Transaction.objects.get_or_create(
-                amount=data["advance_amount"], client=client, order=order
-            )
+            Transaction.objects.get_or_create(amount=data["advance_amount"], client=client, order=order)
 
 
 class EditOrderForm(NewOrderForm):
@@ -157,9 +151,7 @@ class EditOrderForm(NewOrderForm):
         to_field_name="name",
         empty_label="Поставщик",
     )
-    category = ChoiceField(
-        label="Тип заказа", choices=Order.ORDER_TYPE_CHOICES, required=False
-    )
+    category = ChoiceField(label="Тип заказа", choices=Order.ORDER_TYPE_CHOICES, required=False)
     mounter_name = ModelChoiceField(
         label="Монтажник",
         empty_label="Монтажник",
@@ -206,17 +198,13 @@ class EditOrderForm(NewOrderForm):
 
         if "provider_name" in self.changed_data:
             try:
-                self.order.provider = Provider.objects.get(
-                    name=self.cleaned_data["provider_name"]
-                )
+                self.order.provider = Provider.objects.get(name=self.cleaned_data["provider_name"])
             except Provider.DoesNotExist:
                 pass
 
         if "mounter_name" in self.changed_data:
             try:
-                self.order.mounter = Mounter.objects.get(
-                    name__name=self.cleaned_data["mounter_name"]
-                )
+                self.order.mounter = Mounter.objects.get(name__name=self.cleaned_data["mounter_name"])
             except Mounter.DoesNotExist:
                 pass
 
@@ -234,9 +222,7 @@ class EditOrderForm(NewOrderForm):
             return
 
         try:
-            client = Client.objects.get(
-                name=self.cleaned_data["name"], phone=self.cleaned_data["phone"]
-            )
+            client = Client.objects.get(name=self.cleaned_data["name"], phone=self.cleaned_data["phone"])
         except ObjectDoesNotExist:
             if self.order.client.name == self.cleaned_data["name"]:
                 self.order.client.phone = self.cleaned_data["phone"]
@@ -247,7 +233,7 @@ class EditOrderForm(NewOrderForm):
             return
 
     def update_price(self):
-        """ Update prices if they changed, then save Price model. """
+        """Update prices if they changed, then save Price model."""
 
         price_changed = False
         if "total" in self.changed_data:
@@ -266,7 +252,7 @@ class EditOrderForm(NewOrderForm):
             self.order.price.save()
 
     def update_address(self):
-        """ Update address if it changed, then save Address model. """
+        """Update address if it changed, then save Address model."""
 
         address = self.order.address or Address()
         address_changed = False
@@ -284,9 +270,7 @@ class NewTransactionForm(DocboxFormMixin, ModelForm):
         model = Transaction
         fields = ["amount", "date", "comment", "order", "client", "cashbox", "provider"]
         widgets = {
-            "amount": TextInput(
-                {"class": "text-right", "noplaceholder": "on", "autofocus": True}
-            ),
+            "amount": TextInput({"class": "text-right", "noplaceholder": "on", "autofocus": True}),
             "comment": Textarea({"rows": "3"}),
             "order": HiddenInput(),
             "client": HiddenInput(),
@@ -318,9 +302,10 @@ class NewProviderOrderForm(DocboxFormMixin, ModelForm):
             "order": HiddenInput(),
             "provider": HiddenInput(),
             "code": TextInput({"autofocus": True}),
-            "price": TextInput({"class": "text-right", "noplaceholder": "on"}),
+            "price": TextInput({"class": "text-right"}),
             "order_content": Textarea({"rows": "3"}),
         }
+        labels = {"price": "0"}
 
 
 class BookkeepingEditOrderForm(DocboxFormMixin, ModelForm):

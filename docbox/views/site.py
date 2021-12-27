@@ -207,6 +207,7 @@ class NewProviderOrder(LoginRequiredMixin, DocboxFormViewBase):
     def get_initial(self):
         initial_data = super().get_initial()
         initial_data.update({"order": self.order.pk})
+        initial_data.update({"price": ""})
 
         default_provider = self.get_default_provider()
         if default_provider:
