@@ -13,7 +13,7 @@ isort = "*"
 pre-commit = "*"
 
 [packages]
-django = "~=3.0"
+django = "~=3.2"
 psycopg2 = "~=2.8"
 social-auth-app-django = "~=5.0"
 python-jose = "~=3.0"
