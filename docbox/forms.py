@@ -4,6 +4,7 @@ from django.forms import (
     CheckboxInput,
     ChoiceField,
     DateField,
+    DateTimeField,
     DecimalField,
     Form,
     HiddenInput,
@@ -13,6 +14,7 @@ from django.forms import (
     Textarea,
     TextInput,
 )
+from django.utils.timezone import make_aware
 
 from docbox.models import (
     Address,
@@ -126,7 +128,7 @@ class NewOrderForm(DocboxFormMixin, Form):
 
 class EditOrderForm(NewOrderForm):
 
-    date_created = DateField(
+    date_created = DateTimeField(
         label="Дата создания заказа",
         error_messages={
             "required": "Введите дату создания заказа",
@@ -187,7 +189,6 @@ class EditOrderForm(NewOrderForm):
 
     def save(self, order):
         self.order = order
-
         for changed_field in self.changed_data:
             if hasattr(self.order, changed_field):
                 setattr(self.order, changed_field, self.cleaned_data[changed_field])
@@ -302,7 +303,7 @@ class NewProviderOrderForm(DocboxFormMixin, ModelForm):
             "order": HiddenInput(),
             "provider": HiddenInput(),
             "code": TextInput({"autofocus": True}),
-            "price": TextInput({"class": "text-right"}),
+            "price": TextInput({"class": "text-right", "required": True}),
             "order_content": Textarea({"rows": "3"}),
         }
         labels = {"price": "0"}

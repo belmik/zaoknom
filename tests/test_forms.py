@@ -1,6 +1,7 @@
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 
 from django.urls import reverse
+from django.utils import timezone
 
 from docbox.models import Client
 
@@ -67,7 +68,7 @@ class EditOrderFormCase(BaseTestCase):
             "name": self.new_client.name,
             "phone": self.new_client.phone,
             "total": "5000",
-            "date_created": "02.11.2019",
+            "date_created": timezone.make_aware(datetime(2019, 11, 2)),
             "status": "finished",
         }
         return super().setUp()
@@ -81,22 +82,42 @@ class EditOrderFormCase(BaseTestCase):
         self.order.refresh_from_db()
         self.assertEqual(self.order.client.name, self.new_client.name)
 
-    def test_order_charfields(self):
-        today = date.today()
-        order_nonref_fields = {
-            "date_created": today,
-            "status": "finished",
-            "category": "pvc",
-            "date_delivery": today + timedelta(days=10),
-            "date_mounting": today + timedelta(days=11),
-        }
-        self.post_data.update(order_nonref_fields)
+    def test_order_date_created(self):
+        today = timezone.now()
+        self.post_data.update({"date_created": today})
+        self.client.post(self.order.get_absolute_edit_url(), self.post_data)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.date_created, today)
+
+    def test_order_status(self):
+        new_status = "in_production"
+        self.post_data.update({"status": new_status})
+        self.client.post(self.order.get_absolute_edit_url(), self.post_data)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, new_status)
+
+    def test_order_category(self):
+        new_category = "pvc"
+        self.post_data.update({"category": new_category})
+        self.client.post(self.order.get_absolute_edit_url(), self.post_data)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.category, new_category)
+
+    def test_order_date_delivery(self):
+        new_date_delivery = (self.order.date_delivery + timedelta(days=10)).strftime("%d.%m.%Y")
+        self.post_data.update({"date_delivery": new_date_delivery})
 
         self.client.post(self.order.get_absolute_edit_url(), self.post_data)
         self.order.refresh_from_db()
+        self.assertEqual(self.order.date_delivery.strftime("%d.%m.%Y"), new_date_delivery)
 
-        for key, value in order_nonref_fields.items():
-            self.assertEqual(getattr(self.order, key), value)
+    def test_order_date_mounting(self):
+        new_date_mounting = (self.order.date_mounting + timedelta(days=11)).strftime("%d.%m.%Y")
+        self.post_data.update({"date_mounting": new_date_mounting})
+
+        self.client.post(self.order.get_absolute_edit_url(), self.post_data)
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.date_mounting.strftime("%d.%m.%Y"), new_date_mounting)
 
     def test_order_price_change(self):
         price_fields = {
@@ -134,7 +155,7 @@ class NewTransactionFormCase(BaseTestCase):
         amount = 2000
         data = {
             "amount": amount,
-            "date": date.today(),
+            "date": timezone.now(),
             "client": self.order.client.pk,
             "comment": "тестовая транзакция",
             "order": self.order.pk,
@@ -150,7 +171,7 @@ class NewTransactionForProviderFormCase(BaseTestCase):
         amount = 2000
         data = {
             "amount": amount,
-            "date": date.today(),
+            "date": timezone.now(),
             "provider": self.order.provider.pk,
         }
         url = reverse("docbox:new-transaction")

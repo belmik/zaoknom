@@ -12,6 +12,7 @@ from django.http.response import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.urls import resolve, reverse, reverse_lazy
 from django.utils import formats
+from django.utils.timezone import make_aware
 from django.views.generic import (
     DeleteView,
     DetailView,
@@ -83,8 +84,8 @@ class DocboxListViewBase(ListView):
         start_date = request.session.get("start_date", def_start_date)
         end_date = request.session.get("end_date", def_end_date)
 
-        self.start_date = datetime.strptime(start_date, self.date_format)
-        self.end_date = datetime.strptime(end_date, self.date_format)
+        self.start_date = make_aware(datetime.strptime(start_date, self.date_format))
+        self.end_date = make_aware(datetime.strptime(end_date, self.date_format))
 
         return super().get(request, *args, **kwargs)
 

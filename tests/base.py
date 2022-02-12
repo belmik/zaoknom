@@ -1,7 +1,9 @@
 import os
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django.utils.timezone import make_aware
 
 from docbox.models import Address, Client, Mounter, Order, Price, Provider
 
@@ -21,7 +23,7 @@ class BaseTestCase(TestCase):
         address = Address.objects.create(town="Тестовый город", street="Тестовая", building="10", apartment="1")
 
         self.order = Order.objects.create(
-            date_created="2019-11-11",
+            date_created=make_aware(datetime(2019, 11, 11)),
             client=client,
             price=price,
             address=address,
@@ -30,8 +32,8 @@ class BaseTestCase(TestCase):
             provider_code="1111,1112",
             status="finished",
             category="pvc",
-            date_changed="2019-10-01",
-            date_delivery="2019-10-10",
-            date_mounting="2019-10-11",
-            date_finished="2019-10-12",
+            date_changed=make_aware(datetime(2019, 10, 1)),
+            date_delivery=make_aware(datetime(2019, 10, 10)),
+            date_mounting=make_aware(datetime(2019, 10, 11)),
+            date_finished=make_aware(datetime(2019, 10, 12)),
         )

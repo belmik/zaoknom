@@ -1,4 +1,3 @@
-from datetime import date
 from decimal import ROUND_HALF_UP
 from uuid import uuid4
 
@@ -240,7 +239,7 @@ class Price(models.Model):
 class Transaction(models.Model):
     transaction_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     amount = models.DecimalField(verbose_name="Сумма", max_digits=10, decimal_places=0)
-    date = models.DateField(verbose_name="Дата", default=date.today)
+    date = models.DateTimeField(verbose_name="Дата", default=timezone.now)
     client = models.ForeignKey("Client", verbose_name="Клиент", on_delete=models.PROTECT, blank=True, null=True)
     provider = models.ForeignKey("Provider", verbose_name="Поставщик", on_delete=models.PROTECT, blank=True, null=True)
     comment = models.TextField(verbose_name="Комментарий", max_length=1024, blank=True)
@@ -297,7 +296,7 @@ class Order(models.Model):
     ]
 
     order_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    date_created = models.DateField(verbose_name="Дата оформления", default=date.today, null=True)
+    date_created = models.DateTimeField(verbose_name="Дата оформления", default=timezone.now, null=True)
     client = models.ForeignKey("Client", related_name="client_orders", verbose_name="Клиент", on_delete=models.PROTECT)
     price = models.OneToOneField("Price", verbose_name="Цены", on_delete=models.CASCADE)
     address = models.ForeignKey("Address", verbose_name="Адрес", null=True, on_delete=models.PROTECT, blank=True)

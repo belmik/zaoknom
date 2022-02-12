@@ -6,6 +6,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.http import HttpResponseBadRequest, JsonResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -69,7 +70,7 @@ class BulkUpdateProviderOrder(ApiBaseView):
             data = json.loads(request.body)
         except json.JSONDecodeError:
             return self.return_errors("Data should be in a valid json format")
-        six_month_ago = date.today() - timedelta(days=180)
+        six_month_ago = timezone.now() - timedelta(days=180)
         provider_orders = ProviderOrder.objects.filter(creation_date__gt=six_month_ago)
         self.new_orders_on_delivery = []
         for provider_code, new_info in data.items():
